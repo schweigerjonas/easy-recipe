@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "488519895200",
+    "project_id": "easy-recipe-d2500",
+    "storage_bucket": "easy-recipe-d2500.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488519895200:android:0441f28d1592932a3ea1c5",
+        "android_client_info": {
+          "package_name": "com.example.easy_recipe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZMt_5OiYnqt1im0Ic-pHc0vMsthKu9SE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
