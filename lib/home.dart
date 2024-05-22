@@ -15,9 +15,48 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      //Top Search Bar
+      appBar: AppBar(
+        title: const Center(
+          child: Text('EasyRecipe'),
+        ),
+        //backgroundColor: const Color(0xFF4CAD85),
+        automaticallyImplyLeading: false,
+      ),
+
       //Content
-      body: const Center(
-        child: Text('Home Page'),
+      body: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 24.0),
+            child: Row(
+              children: <Widget>[
+                const Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.search),
+                      hintText: 'Suche',
+                      border: OutlineInputBorder(),
+                      fillColor: Color(0xFFFFFFFF),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                ElevatedButton(
+                  onPressed: () {
+
+                  },
+                  child: const Icon(
+                      Icons.filter_list,
+                      color: Color(0xFF367D5F)
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+        ],
+
       ),
 
       //Navigation
@@ -33,21 +72,21 @@ class _HomePageState extends State<HomePage> {
           NavigationDestination(
             icon: Icon(
                 Icons.book,
-                color: const Color(0xFF367D5F),
+                color: Color(0xFF367D5F),
             ),
             label: 'Meine Rezepte',
           ),
           NavigationDestination(
             icon: Icon(
                 Icons.home,
-                color: const Color(0xFF367D5F),
+                color: Color(0xFF367D5F),
             ),
             label: 'Home',
           ),
           NavigationDestination(
             icon: Icon(
                 Icons.person,
-                color: const Color(0xFF367D5F),
+                color: Color(0xFF367D5F),
             ),
             label: 'Profil',
           ),
