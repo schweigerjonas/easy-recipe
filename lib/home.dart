@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:easy_recipe/models/recipe.api.dart';
+import 'package:easy_recipe/models/recipe.dart';
+import 'package:easy_recipe/recipe_card.dart';
 
 import 'filter_option.dart';
 
@@ -11,11 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late List<Recipe> _recipes;
+  bool _isLoading = true;
+
   int currentPageIndex = 1;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
-  static List<FilterOption> _filterOptions = [
+  static final List<FilterOption> _filterOptions = [
     FilterOption(id: 0, name: 'bis 20min'),
     FilterOption(id: 1, name: '20 bis 40min'),
     FilterOption(id: 2, name: '40 bis 60min'),
@@ -39,6 +45,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _selectedFilterOptions = [];
     super.initState();
+    getRecipes();
+  }
+
+  Future<void> getRecipes() async {
+    _recipes = await RecipeApi.getRecipe();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   void _showMultiSelect(BuildContext context) async {
@@ -61,40 +75,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
-
-  List<Card> _buildRecipeCards(int count) {
-    List<Card> cards = List.generate(
-      count,
-      (int index) {
-        return const Card(
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 18.0 / 11.0,
-                //IMAGES ARE SHOWN IN THIS CONTAINER
-                //child ,
-              ),
-              const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('TITLE'),
-                    SizedBox(height: 8.0),
-                    Text('SCHWIERIGKEIT | DAUER'),
-                    SizedBox(height: 8.0),
-                    Text('BESCHREIBUNG'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-    return cards;
   }
 
   @override
@@ -143,13 +123,18 @@ class _HomePageState extends State<HomePage> {
             child: const Text('Beliebte Rezepte'),
           ),
           Expanded(
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 1,
-              padding: const EdgeInsets.all(16.0),
-              childAspectRatio: 8.0 / 9.0,
-              children: _buildRecipeCards(10),
-            ),
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+              itemCount: _recipes.length,
+              itemBuilder: (context, index) {
+                return RecipeCard(
+                    title: _recipes[index].name,
+                    cookTime: _recipes[index].totalTime,
+                    rating: _recipes[index].rating.toString(),
+                    thumbnailUrl: _recipes[index].images);
+              },
+            )
           ),
         ],
       ),
