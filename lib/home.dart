@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
-  static List<FilterOption> _filterOptions = [
+  static final List<FilterOption> _filterOptions = [
     FilterOption(id: 0, name: 'bis 20min'),
     FilterOption(id: 1, name: '20 bis 40min'),
     FilterOption(id: 2, name: '40 bis 60min'),
@@ -55,7 +55,9 @@ class _HomePageState extends State<HomePage> {
           items: _items,
           initialValue: _selectedFilterOptions,
           onConfirm: (values) {
-            _selectedFilterOptions = values;
+            setState(() {
+              _selectedFilterOptions = values;
+            });
           },
           maxChildSize: 0.8,
         );
@@ -76,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                 //IMAGES ARE SHOWN IN THIS CONTAINER
                 //child ,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,11 +115,12 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 24.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
             child: Row(
               children: <Widget>[
                 const Expanded(
                   child: TextField(
+                    style: TextStyle(height: 1),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       hintText: 'Suche',
@@ -139,8 +142,27 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+            child: MultiSelectChipDisplay(
+              items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+              scroll: true,
+              onTap: (value) {
+                setState(() {
+                  _selectedFilterOptions.remove(value);
+                });
+              },
+            ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
             alignment: Alignment.centerLeft,
-            child: const Text('Beliebte Rezepte'),
+            child: const Text(
+              'Beliebte Rezepte',
+              style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
           ),
           Expanded(
             child: GridView.count(
