@@ -152,7 +152,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-
           Container(
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
             alignment: Alignment.centerLeft,
@@ -175,7 +174,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
 
+        },
+      ),
       //Navigation
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,
