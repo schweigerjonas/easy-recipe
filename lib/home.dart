@@ -69,7 +69,9 @@ class _HomePageState extends State<HomePage> {
           items: _items,
           initialValue: _selectedFilterOptions,
           onConfirm: (values) {
-            _selectedFilterOptions = values;
+            setState(() {
+              _selectedFilterOptions = values;
+            });
           },
           maxChildSize: 0.8,
         );
@@ -93,11 +95,12 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 24.0),
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
             child: Row(
               children: <Widget>[
                 const Expanded(
                   child: TextField(
+                    style: TextStyle(height: 1),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       hintText: 'Suche',
@@ -119,8 +122,26 @@ class _HomePageState extends State<HomePage> {
           ),
           Container(
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+            child: MultiSelectChipDisplay(
+              items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+              scroll: true,
+              onTap: (value) {
+                setState(() {
+                  _selectedFilterOptions.remove(value);
+                });
+              },
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
             alignment: Alignment.centerLeft,
-            child: const Text('Beliebte Rezepte'),
+            child: const Text(
+              'Beliebte Rezepte',
+              style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold
+              ),
+            ),
           ),
           Expanded(
             child: _isLoading
@@ -138,7 +159,12 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
 
+        },
+      ),
       //Navigation
       bottomNavigationBar: NavigationBar(
         labelBehavior: labelBehavior,
