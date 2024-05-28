@@ -23,16 +23,14 @@ class _HomePageState extends State<HomePage> {
 
   static final List<FilterOption> _filterOptions = [
     FilterOption(id: 0, name: 'bis 20min'),
-    FilterOption(id: 1, name: '20 bis 40min'),
-    FilterOption(id: 2, name: '40 bis 60min'),
+    FilterOption(id: 1, name: 'bis 40min'),
+    FilterOption(id: 2, name: 'bis 60min'),
     FilterOption(id: 3, name: 'länger als 60min'),
-    FilterOption(id: 4, name: '2 Portionen'),
-    FilterOption(id: 5, name: '3 Portionen'),
-    FilterOption(id: 6, name: '4 Portionen'),
-    FilterOption(id: 7, name: 'vegetarisch'),
-    FilterOption(id: 8, name: 'vegan'),
-    FilterOption(id: 9, name: 'laktosefrei'),
-    FilterOption(id: 10, name: 'glutenfrei'),
+    FilterOption(id: 4, name: 'vegetarisch'),
+    FilterOption(id: 5, name: 'vegan'),
+    FilterOption(id: 6, name: 'leicht'),
+    FilterOption(id: 7, name: 'mittel'),
+    FilterOption(id: 8, name: 'schwer'),
   ];
 
   final _items = _filterOptions
