@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
-import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 
 import 'filter_option.dart';
+import 'models/recipe.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,7 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Recipe> _recipes;
+  late List<Recipe> _recipes = [];
+  int randomRecipeCount = 5;
   bool _isLoading = true;
 
   int currentPageIndex = 1;
@@ -42,12 +43,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _selectedFilterOptions = [];
-    super.initState();
     getRecipes();
+    super.initState();
   }
 
   Future<void> getRecipes() async {
-    _recipes = await RecipeApi.getRecipe();
+    _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
     setState(() {
       _isLoading = false;
     });
@@ -145,14 +146,18 @@ class _HomePageState extends State<HomePage> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
-              itemCount: _recipes.length,
+              itemCount: randomRecipeCount,
               itemBuilder: (context, index) {
+                final recipe = _recipes[index];
+                
+                // ensures special characters in the title are displayed properly
+                String decodedTitle = RecipeApi().decodeSpecialCharacters(recipe.title);
                 return RecipeCard(
-                    title: _recipes[index].name,
-                    cookTime: _recipes[index].totalTime,
-                    rating: _recipes[index].rating.toString(),
-                    thumbnailUrl: _recipes[index].images);
-              },
+                  title: decodedTitle,
+                  cookingTime: recipe.cookingTime,
+                  thumbnailUrl: recipe.image,
+                );
+              }
             )
           ),
         ],

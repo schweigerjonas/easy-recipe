@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
-  final String rating;
-  final double cookTime;
+  final int cookingTime;
   final String thumbnailUrl;
+
   const RecipeCard({super.key, 
     required this.title,
-    required this.cookTime,
-    required this.rating,
+    required this.cookingTime,
     required this.thumbnailUrl,
   });
   @override
@@ -77,31 +76,12 @@ class RecipeCard extends StatelessWidget {
                     child: Row(
                       children: [
                         const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 7),
-                        Text(rating, style: const TextStyle(color: Colors.white),),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5),
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
                           Icons.schedule,
                           color: Colors.yellow,
                           size: 18,
                         ),
                         const SizedBox(width: 7),
-                        Text("${(cookTime / 60).toString().split(".")[0]}min", style: const TextStyle(color: Colors.white),),
+                        Text("${cookingTime}min", style: const TextStyle(color: Colors.white),),
                       ],
                     ),
                   )
