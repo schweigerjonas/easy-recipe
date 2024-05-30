@@ -12,7 +12,7 @@ class Recipe {
   factory Recipe.fromJson(dynamic json) {
     return Recipe(
         title: json['title'] as String,
-        image: json['image'] as String,
+        image: (json['image'] ?? 'https://fakeimg.pl/312x231?text=No+Image+Available') as String,
         cookingTime: json['readyInMinutes'] as int
     );
   }
