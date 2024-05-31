@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../filter_option.dart';
 
 class RecipeApi {
+
   final String _baseUrl = 'https://api.spoonacular.com';
   //TODO: in .env Datei auslagern
   final String _apiKey = 'faa10ae21f424bafada3be00631ec0fa';

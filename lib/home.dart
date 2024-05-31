@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
+import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 
 import 'filter_option.dart';
-import 'models/recipe.dart';
+import 'recipe_detail.dart';
 
 //TODO: Add colors as variables to reduce redundancy
 
@@ -20,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   late List<Recipe> _recipes = [];
   int randomRecipeCount = 5;
   bool _isLoading = true;
-
+  final searchController = TextEditingController();
   int currentPageIndex = 1;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
@@ -53,8 +54,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _selectedFilterOptions = [];
-    getRecipes();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getRecipes(String name) async {
+    _recipes = await RecipeApi.getRecipe(name);
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> getRecipes() async {
@@ -91,159 +105,105 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //Top Search Bar
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Center(
-          child: Text('EasyRecipe',
-            style: TextStyle(
-              fontSize: 24.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-      ),
-
-      //Content
-      body: Column(
-        children: [
-          Container(
-            color: Theme.of(context).colorScheme.primary,
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-            child: Row(
-              children: <Widget>[
-                const Expanded(
-                  child: TextField(
-                    style: TextStyle(
-                      height: 1.0,
-                      color: Color(0xFF8D8D8D),
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText: 'Search',
-                      hintStyle: TextStyle(
+        body: Column(
+          children: [
+            Container(
+              color: Theme.of(context).colorScheme.primary,
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(
+                        height: 1,
                         color: Color(0xFF8D8D8D),
                       ),
-                      filled: true,
-                      fillColor: Color(0xFFFFFFFF),
-                      border: OutlineInputBorder(),
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xFFFFFFFF),
+                        border: OutlineInputBorder(),
+                      ),
+                      controller: searchController,
+                      onSubmitted: (String text) {
+                        getRecipes(searchController.text);
+                        currentPageIndex = 1;
+                      },
                     ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  const SizedBox(width: 8.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                    onPressed: () {
+                      _showMultiSelect(context);
+                    },
+                    child:
+                    const Icon(
+                        Icons.filter_list,
+                        color: Color(0xFF3D3D3D)
+                    ),
                   ),
-                  onPressed: () {
-                    _showMultiSelect(context);
-                  },
-                  child:
-                      const Icon(
-                          Icons.filter_list,
-                          color: Color(0xFF3D3D3D)
-                      ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              child: MultiSelectChipDisplay(
+                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+                scroll: true,
+                onTap: (value) {
+                  setState(() {
+                    _selectedFilterOptions.remove(value);
+                  });
+                },
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                'Suggested Recipes',
+                style: TextStyle(
+                    fontSize: 20.0,
                 ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-            child: MultiSelectChipDisplay(
-              items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
-              scroll: true,
-              onTap: (value) {
-                setState(() {
-                  _selectedFilterOptions.remove(value);
-                });
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-            alignment: Alignment.centerLeft,
-            child: const Text(
-              'Suggested Recipes',
-              style: TextStyle(
-                  fontSize: 20.0,
               ),
             ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-              itemCount: randomRecipeCount,
-              itemBuilder: (context, index) {
-                final recipe = _recipes[index];
-                
-                // ensures special characters in the title are displayed properly
-                String decodedTitle = RecipeApi().decodeSpecialCharacters(recipe.title);
-                return RecipeCard(
-                  title: decodedTitle,
-                  cookingTime: recipe.cookingTime,
-                  thumbnailUrl: recipe.image,
-                );
-              }
-            )
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(
-          Icons.add,
-          color: Color(0xFF3D3D3D),
-        ),
-        onPressed: () {
+            Expanded(
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                    itemCount: randomRecipeCount,
+                    itemBuilder: (context, index) {
+                      final recipe = _recipes[index];
 
-        },
-      ),
-      //Navigation
-      bottomNavigationBar: Container(
-        color: Theme.of(context).colorScheme.primary,
-        padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
-        child: BottomNavigationBar(
-          elevation: 0.0,
-          type: BottomNavigationBarType.shifting,
-          showUnselectedLabels: false,
-          currentIndex: currentPageIndex,
-          onTap: (int index) {
-            setState(() {
-              currentPageIndex = index;
-            });
-          },
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              icon: const Icon(
-                Icons.book,
-                color: Color(0xFFFFFFFF),
-              ),
-              label: 'My Recipes',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              icon: const Icon(
-                Icons.home,
-                color: Color(0xFFFFFFFF),
-              ),
-              label: 'Home',
-            ),
-          BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              icon: const Icon(
-                Icons.person,
-                color: Color(0xFFFFFFFF),
-              ),
-              label: 'Profile',
+                      // ensures special characters in the title are displayed properly
+                      String decodedTitle = RecipeApi().decodeSpecialCharacters(recipe.title);
+                      return RecipeCard(
+                        title: decodedTitle,
+                        cookingTime: recipe.cookingTime,
+                        thumbnailUrl: recipe.image,
+                      );
+                    }
+                )
             ),
           ],
         ),
-      ),
-      resizeToAvoidBottomInset: false,
-    );
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const Icon(
+            Icons.add,
+            color: Color(0xFF3D3D3D),
+          ),
+          onPressed: () {
+
+          },
+        ),
+      );
   }
 }

@@ -4,18 +4,18 @@ class RecipeCard extends StatelessWidget {
   final String title;
   final int cookingTime;
   final String thumbnailUrl;
+  final VoidCallback onTap;
 
   const RecipeCard({super.key, 
     required this.title,
     required this.cookingTime,
     required this.thumbnailUrl,
+    required this.onTap,
   });
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        print('Recipe Card');
-      },
+      onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 22, vertical: 10),
         width: MediaQuery.of(context).size.width,
@@ -76,6 +76,25 @@ class RecipeCard extends StatelessWidget {
                     child: Row(
                       children: [
                         const Icon(
+                          /*Icons.star,
+                          color: Colors.yellow,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 7),
+                        Text(rating, style: const TextStyle(color: Colors.white),),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(*/
                           Icons.schedule,
                           color: Colors.yellow,
                           size: 18,
