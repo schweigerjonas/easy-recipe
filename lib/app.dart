@@ -8,7 +8,6 @@ class RecipeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget build(BuildContext context) {
       return ChangeNotifierProvider(
         create: (context) => MyAppState(),
         child: MaterialApp(
@@ -19,11 +18,11 @@ class RecipeApp extends StatelessWidget {
               primary: const Color(0xFF419873),
               secondary: const Color(0xFFFF574D),
             ),
+          ),
+          title: 'Easy Recipe',
+          home: MyHomePage(),
         ),
-        title: 'Easy Recipe',
-        home: MyHomePage(),
-      ),
-    );
+      );
   }
 }
 
