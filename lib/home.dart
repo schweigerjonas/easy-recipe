@@ -55,6 +55,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _selectedFilterOptions = [];
     super.initState();
+    getRecipes();
   }
 
   @override
@@ -63,13 +64,13 @@ class _HomePageState extends State<HomePage> {
     searchController.dispose();
     super.dispose();
   }
-
+/*
   Future<void> getRecipes(String name) async {
     _recipes = await RecipeApi.getRecipe(name);
     setState(() {
       _isLoading = false;
     });
-  }
+  }*/
 
   Future<void> getRecipes() async {
     _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
@@ -104,7 +105,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if (currentPageIndex == 1) {
+      return Scaffold(
         body: Column(
           children: [
             Container(
@@ -130,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       controller: searchController,
                       onSubmitted: (String text) {
-                        getRecipes(searchController.text);
+                        //getRecipes(searchController.text);
                         currentPageIndex = 1;
                       },
                     ),
@@ -170,7 +172,7 @@ class _HomePageState extends State<HomePage> {
               child: const Text(
                 'Suggested Recipes',
                 style: TextStyle(
-                    fontSize: 20.0,
+                  fontSize: 20.0,
                 ),
               ),
             ),
@@ -188,6 +190,11 @@ class _HomePageState extends State<HomePage> {
                         title: decodedTitle,
                         cookingTime: recipe.cookingTime,
                         thumbnailUrl: recipe.image,
+                        onTap: () {
+                          setState(() {
+                            currentPageIndex = 2;
+                          });
+                        },
                       );
                     }
                 )
@@ -205,5 +212,10 @@ class _HomePageState extends State<HomePage> {
           },
         ),
       );
+    } else if (currentPageIndex == 2) {
+      return RecipeDetailPage();
+    } else {
+      throw UnimplementedError('no widget for $currentPageIndex');
+    }
   }
 }
