@@ -15,7 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late List<Recipe> _recipes = [];
-  int randomRecipeCount = 5;
+  int randomRecipeCount = 0;
   bool _isLoading = true;
 
   int currentPageIndex = 1;
@@ -23,15 +23,22 @@ class _HomePageState extends State<HomePage> {
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
   static final List<FilterOption> _filterOptions = [
-    FilterOption(id: 0, name: 'bis 20min'),
-    FilterOption(id: 1, name: 'bis 40min'),
-    FilterOption(id: 2, name: 'bis 60min'),
-    FilterOption(id: 3, name: 'länger als 60min'),
-    FilterOption(id: 4, name: 'vegetarisch'),
+    FilterOption(id: 0, name: '30min'),
+    FilterOption(id: 1, name: '45min'),
+    FilterOption(id: 2, name: '60min'),
+    FilterOption(id: 3, name: 'more than 60min'),
+    FilterOption(id: 4, name: 'vegetarian'),
     FilterOption(id: 5, name: 'vegan'),
-    FilterOption(id: 6, name: 'leicht'),
-    FilterOption(id: 7, name: 'mittel'),
-    FilterOption(id: 8, name: 'schwer'),
+    FilterOption(id: 6, name: 'dairy-free'),
+    FilterOption(id: 7, name: 'gluten-free'),
+    FilterOption(id: 8, name: 'ketogenic'),
+    FilterOption(id: 9, name: 'breakfast'),
+    FilterOption(id: 10, name: 'lunch'),
+    FilterOption(id: 11, name: 'dinner'),
+    FilterOption(id: 12, name: 'appetizer'),
+    FilterOption(id: 13, name: 'main dish'),
+    FilterOption(id: 14, name: 'side dish'),
+    FilterOption(id: 15, name: 'snack'),
   ];
 
   final _items = _filterOptions
@@ -102,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                     style: TextStyle(height: 1),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
-                      hintText: 'Suche',
+                      hintText: 'Search',
                       border: OutlineInputBorder(),
                       fillColor: Color(0xFFFFFFFF),
                     ),
@@ -135,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
             alignment: Alignment.centerLeft,
             child: const Text(
-              'Beliebte Rezepte',
+              'Suggested Recipes',
               style: TextStyle(
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold
@@ -183,7 +190,7 @@ class _HomePageState extends State<HomePage> {
               Icons.book,
               color: Color(0xFF367D5F),
             ),
-            label: 'Meine Rezepte',
+            label: 'My Recipes',
           ),
           NavigationDestination(
             icon: Icon(
@@ -197,7 +204,7 @@ class _HomePageState extends State<HomePage> {
               Icons.person,
               color: Color(0xFF367D5F),
             ),
-            label: 'Profil',
+            label: 'Profile',
           ),
         ],
       ),
