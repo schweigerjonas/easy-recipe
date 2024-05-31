@@ -17,8 +17,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late List<Recipe> _recipes;
   bool _isLoading = true;
-
-  int currentPageIndex = 1;
+  final searchController = TextEditingController();
+  int currentPageIndex = 0;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
@@ -46,11 +46,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _selectedFilterOptions = [];
     super.initState();
-    getRecipes();
   }
 
-  Future<void> getRecipes() async {
-    _recipes = await RecipeApi.getRecipe();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getRecipes(String name) async {
+    _recipes = await RecipeApi.getRecipe(name);
     setState(() {
       _isLoading = false;
     });
@@ -82,7 +88,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentPageIndex == 1) {
+    if (currentPageIndex == 0) {
       return Scaffold(
         body: Column(
           children: [
@@ -90,15 +96,79 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
               child: Row(
                 children: <Widget>[
-                  const Expanded(
+                  Expanded(
                     child: TextField(
-                      style: TextStyle(height: 1),
-                      decoration: InputDecoration(
+                      style: const TextStyle(height: 1),
+                      decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         hintText: 'Suche',
                         border: OutlineInputBorder(),
                         fillColor: Color(0xFFFFFFFF),
                       ),
+                      controller: searchController,
+                      onSubmitted: (String text) {
+                        getRecipes(searchController.text);
+                        currentPageIndex = 1;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showMultiSelect(context);
+                    },
+                    child:
+                    const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              child: MultiSelectChipDisplay(
+                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+                scroll: true,
+                onTap: (value) {
+                  setState(() {
+                    _selectedFilterOptions.remove(value);
+                  });
+                },
+              ),
+            ),
+            const Center(
+              child: Text("noch keine Suche durchgeführt"),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+
+          },
+        ),
+      );
+    } else if (currentPageIndex == 1) {
+      return Scaffold(
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+              child: Row(
+                children: <Widget>[
+                   Expanded(
+                    child: TextField(
+                      style: const TextStyle(height: 1),
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Suche',
+                        border: OutlineInputBorder(),
+                        fillColor: Color(0xFFFFFFFF),
+                      ),
+                      controller: searchController,
+                      onSubmitted: (String text) {
+                        getRecipes(searchController.text);
+                        currentPageIndex = 1;
+                      },
                     ),
                   ),
                   const SizedBox(width: 8.0),
