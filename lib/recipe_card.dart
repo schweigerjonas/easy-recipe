@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
-  final String rating;
-  final double cookTime;
+  final int cookingTime;
   final String thumbnailUrl;
   final VoidCallback onTap;
-  const RecipeCard({
+
+  const RecipeCard({super.key, 
     required this.title,
-    required this.cookTime,
-    required this.rating,
+    required this.cookingTime,
     required this.thumbnailUrl,
     required this.onTap,
   });
@@ -53,8 +52,8 @@ class RecipeCard extends StatelessWidget {
                 child: Text(
                   title,
                   style: const TextStyle(
-                      fontSize: 19,
-                      color: Colors.white
+                    fontSize: 19,
+                    color: Colors.white
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
@@ -77,7 +76,7 @@ class RecipeCard extends StatelessWidget {
                     child: Row(
                       children: [
                         const Icon(
-                          Icons.star,
+                          /*Icons.star,
                           color: Colors.yellow,
                           size: 18,
                         ),
@@ -95,13 +94,13 @@ class RecipeCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(
+                        const Icon(*/
                           Icons.schedule,
                           color: Colors.yellow,
                           size: 18,
                         ),
                         const SizedBox(width: 7),
-                        Text("${(cookTime / 60).toString().split(".")[0]}min", style: const TextStyle(color: Colors.white),),
+                        Text("${cookingTime}min", style: const TextStyle(color: Colors.white),),
                       ],
                     ),
                   )

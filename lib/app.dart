@@ -8,9 +8,18 @@ class RecipeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
+    Widget build(BuildContext context) {
+      return ChangeNotifierProvider(
+        create: (context) => MyAppState(),
+        child: MaterialApp(
+          theme: ThemeData(
+            useMaterial3: true,
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF419873),
+              primary: const Color(0xFF419873),
+              secondary: const Color(0xFFFF574D),
+            ),
+        ),
         title: 'Easy Recipe',
         home: MyHomePage(),
       ),
@@ -51,46 +60,62 @@ class _MyHomePageState extends State<MyHomePage> {
       return Scaffold(
         //Top Search Bar
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
           title: const Center(
-            child: Text('EasyRecipe'),
+            child: Text('EasyRecipe',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
-          //backgroundColor: const Color(0xFF4CAD85),
           automaticallyImplyLeading: false,
         ),
 
         //Content
         body: page,
         //Navigation
-        bottomNavigationBar: NavigationBar(
-          destinations: const <Widget>[
-            NavigationDestination(
-              icon: Icon(
-                Icons.book,
-                color: Color(0xFF367D5F),
+        bottomNavigationBar: Container(
+          color: Theme.of(context).colorScheme.primary,
+          padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+          child: BottomNavigationBar(
+            elevation: 0.0,
+            type: BottomNavigationBarType.shifting,
+            showUnselectedLabels: false,
+            currentIndex: selectedIndex,
+            onTap: (int index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                icon: const Icon(
+                  Icons.book,
+                  color: Color(0xFFFFFFFF),
+                ),
+                label: 'My Recipes',
               ),
-              label: 'Meine Rezepte',
-            ),
-            NavigationDestination(
-              icon: Icon(
-                Icons.home,
-                color: Color(0xFF367D5F),
+              BottomNavigationBarItem(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                icon: const Icon(
+                  Icons.home,
+                  color: Color(0xFFFFFFFF),
+                ),
+                label: 'Home',
               ),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(
-                Icons.person,
-                color: Color(0xFF367D5F),
+              BottomNavigationBarItem(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                icon: const Icon(
+                  Icons.person,
+                  color: Color(0xFFFFFFFF),
+                ),
+                label: 'Profile',
               ),
-              label: 'Profil',
-            ),
-          ],
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              selectedIndex = value;
-            });
-          },
+            ],
+          ),
         ),
         resizeToAvoidBottomInset: false,
       );

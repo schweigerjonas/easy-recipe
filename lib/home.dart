@@ -7,6 +7,8 @@ import 'package:easy_recipe/recipe_card.dart';
 import 'filter_option.dart';
 import 'recipe_detail.dart';
 
+//TODO: Add colors as variables to reduce redundancy
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,25 +17,32 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late List<Recipe> _recipes;
+
+  late List<Recipe> _recipes = [];
+  int randomRecipeCount = 5;
   bool _isLoading = true;
   final searchController = TextEditingController();
-  int currentPageIndex = 0;
+  int currentPageIndex = 1;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
   static final List<FilterOption> _filterOptions = [
-    FilterOption(id: 0, name: 'bis 20min'),
-    FilterOption(id: 1, name: '20 bis 40min'),
-    FilterOption(id: 2, name: '40 bis 60min'),
-    FilterOption(id: 3, name: 'länger als 60min'),
-    FilterOption(id: 4, name: '2 Portionen'),
-    FilterOption(id: 5, name: '3 Portionen'),
-    FilterOption(id: 6, name: '4 Portionen'),
-    FilterOption(id: 7, name: 'vegetarisch'),
-    FilterOption(id: 8, name: 'vegan'),
-    FilterOption(id: 9, name: 'laktosefrei'),
-    FilterOption(id: 10, name: 'glutenfrei'),
+    FilterOption(id: 0, name: '30min'),
+    FilterOption(id: 1, name: '45min'),
+    FilterOption(id: 2, name: '60min'),
+    FilterOption(id: 3, name: 'more than 60min'),
+    FilterOption(id: 4, name: 'vegetarian'),
+    FilterOption(id: 5, name: 'vegan'),
+    FilterOption(id: 6, name: 'dairy-free'),
+    FilterOption(id: 7, name: 'gluten-free'),
+    FilterOption(id: 8, name: 'ketogenic'),
+    FilterOption(id: 9, name: 'breakfast'),
+    FilterOption(id: 10, name: 'lunch'),
+    FilterOption(id: 11, name: 'dinner'),
+    FilterOption(id: 12, name: 'appetizer'),
+    FilterOption(id: 13, name: 'main dish'),
+    FilterOption(id: 14, name: 'side dish'),
+    FilterOption(id: 15, name: 'snack'),
   ];
 
   final _items = _filterOptions
@@ -57,6 +66,13 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> getRecipes(String name) async {
     _recipes = await RecipeApi.getRecipe(name);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> getRecipes() async {
+    _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
     setState(() {
       _isLoading = false;
     });
@@ -88,22 +104,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentPageIndex == 0) {
-      return Scaffold(
+    return Scaffold(
         body: Column(
           children: [
             Container(
+              color: Theme.of(context).colorScheme.primary,
               padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      style: const TextStyle(height: 1),
+                      style: const TextStyle(
+                        height: 1,
+                        color: Color(0xFF8D8D8D),
+                      ),
                       decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.search),
-                        hintText: 'Suche',
-                        border: OutlineInputBorder(),
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF8D8D8D),
+                        ),
+                        filled: true,
                         fillColor: Color(0xFFFFFFFF),
+                        border: OutlineInputBorder(),
                       ),
                       controller: searchController,
                       onSubmitted: (String text) {
@@ -114,70 +137,17 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(width: 8.0),
                   ElevatedButton(
-                    onPressed: () {
-                      _showMultiSelect(context);
-                    },
-                    child:
-                    const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-              child: MultiSelectChipDisplay(
-                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
-                scroll: true,
-                onTap: (value) {
-                  setState(() {
-                    _selectedFilterOptions.remove(value);
-                  });
-                },
-              ),
-            ),
-            const Center(
-              child: Text("noch keine Suche durchgeführt"),
-            )
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-
-          },
-        ),
-      );
-    } else if (currentPageIndex == 1) {
-      return Scaffold(
-        body: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-              child: Row(
-                children: <Widget>[
-                   Expanded(
-                    child: TextField(
-                      style: const TextStyle(height: 1),
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        hintText: 'Suche',
-                        border: OutlineInputBorder(),
-                        fillColor: Color(0xFFFFFFFF),
-                      ),
-                      controller: searchController,
-                      onSubmitted: (String text) {
-                        getRecipes(searchController.text);
-                        currentPageIndex = 1;
-                      },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  ElevatedButton(
                     onPressed: () {
                       _showMultiSelect(context);
                     },
                     child:
-                    const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
+                    const Icon(
+                        Icons.filter_list,
+                        color: Color(0xFF3D3D3D)
+                    ),
                   ),
                 ],
               ),
@@ -198,10 +168,9 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
               alignment: Alignment.centerLeft,
               child: const Text(
-                'Beliebte Rezepte',
+                'Suggested Recipes',
                 style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold
+                    fontSize: 20.0,
                 ),
               ),
             ),
@@ -209,35 +178,32 @@ class _HomePageState extends State<HomePage> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
-                  itemCount: _recipes.length,
-                  itemBuilder: (context, index) {
-                    return RecipeCard(
-                      title: _recipes[index].name,
-                      cookTime: _recipes[index].totalTime,
-                      rating: _recipes[index].rating.toString(),
-                      thumbnailUrl: _recipes[index].images,
-                      onTap: () {
-                        setState(() {
-                          currentPageIndex = 2;
-                        });
-                      },
-                    );
-                  },
+                    itemCount: randomRecipeCount,
+                    itemBuilder: (context, index) {
+                      final recipe = _recipes[index];
+
+                      // ensures special characters in the title are displayed properly
+                      String decodedTitle = RecipeApi().decodeSpecialCharacters(recipe.title);
+                      return RecipeCard(
+                        title: decodedTitle,
+                        cookingTime: recipe.cookingTime,
+                        thumbnailUrl: recipe.image,
+                      );
+                    }
                 )
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          child: const Icon(
+            Icons.add,
+            color: Color(0xFF3D3D3D),
+          ),
           onPressed: () {
 
           },
         ),
       );
-    } else if (currentPageIndex == 2) {
-      return RecipeDetailPage();
-    } else {
-      throw UnimplementedError('no widget for $currentPageIndex');
-    }
   }
 }
