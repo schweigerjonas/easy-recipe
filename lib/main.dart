@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-//import 'app.dart';
-import 'app_neu.dart';
+import 'app.dart';
 
 void main() {
   runApp(const RecipeApp());

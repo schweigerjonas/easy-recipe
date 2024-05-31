@@ -1,10 +1,11 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 
 import 'filter_option.dart';
+import 'recipe_detail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,8 +17,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late List<Recipe> _recipes;
   bool _isLoading = true;
-
-  int currentPageIndex = 1;
+  final searchController = TextEditingController();
+  int currentPageIndex = 0;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
@@ -45,11 +46,17 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _selectedFilterOptions = [];
     super.initState();
-    getRecipes();
   }
 
-  Future<void> getRecipes() async {
-    _recipes = await RecipeApi.getRecipe();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getRecipes(String name) async {
+    _recipes = await RecipeApi.getRecipe(name);
     setState(() {
       _isLoading = false;
     });
@@ -81,124 +88,156 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //Top Search Bar
-      appBar: AppBar(
-        title: const Center(
-          child: Text('EasyRecipe'),
-        ),
-        //backgroundColor: const Color(0xFF4CAD85),
-        automaticallyImplyLeading: false,
-      ),
-
-      //Content
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
-            child: Row(
-              children: <Widget>[
-                const Expanded(
-                  child: TextField(
-                    style: TextStyle(height: 1),
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.search),
-                      hintText: 'Suche',
-                      border: OutlineInputBorder(),
-                      fillColor: Color(0xFFFFFFFF),
+    if (currentPageIndex == 0) {
+      return Scaffold(
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(height: 1),
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Suche',
+                        border: OutlineInputBorder(),
+                        fillColor: Color(0xFFFFFFFF),
+                      ),
+                      controller: searchController,
+                      onSubmitted: (String text) {
+                        getRecipes(searchController.text);
+                        currentPageIndex = 1;
+                      },
                     ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                ElevatedButton(
-                  onPressed: () {
-                    _showMultiSelect(context);
-                  },
-                  child:
-                      const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-            child: MultiSelectChipDisplay(
-              items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
-              scroll: true,
-              onTap: (value) {
-                setState(() {
-                  _selectedFilterOptions.remove(value);
-                });
-              },
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-            alignment: Alignment.centerLeft,
-            child: const Text(
-              'Beliebte Rezepte',
-              style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold
+                  const SizedBox(width: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showMultiSelect(context);
+                    },
+                    child:
+                    const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
+                  ),
+                ],
               ),
             ),
-          ),
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-              itemCount: _recipes.length,
-              itemBuilder: (context, index) {
-                return RecipeCard(
-                    title: _recipes[index].name,
-                    cookTime: _recipes[index].totalTime,
-                    rating: _recipes[index].rating.toString(),
-                    thumbnailUrl: _recipes[index].images);
-              },
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              child: MultiSelectChipDisplay(
+                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+                scroll: true,
+                onTap: (value) {
+                  setState(() {
+                    _selectedFilterOptions.remove(value);
+                  });
+                },
+              ),
+            ),
+            const Center(
+              child: Text("noch keine Suche durchgeführt"),
             )
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
 
-        },
-      ),
-      //Navigation
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(
-              Icons.book,
-              color: Color(0xFF367D5F),
+          },
+        ),
+      );
+    } else if (currentPageIndex == 1) {
+      return Scaffold(
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+              child: Row(
+                children: <Widget>[
+                   Expanded(
+                    child: TextField(
+                      style: const TextStyle(height: 1),
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Suche',
+                        border: OutlineInputBorder(),
+                        fillColor: Color(0xFFFFFFFF),
+                      ),
+                      controller: searchController,
+                      onSubmitted: (String text) {
+                        getRecipes(searchController.text);
+                        currentPageIndex = 1;
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      _showMultiSelect(context);
+                    },
+                    child:
+                    const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
+                  ),
+                ],
+              ),
             ),
-            label: 'Meine Rezepte',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.home,
-              color: Color(0xFF367D5F),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              child: MultiSelectChipDisplay(
+                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+                scroll: true,
+                onTap: (value) {
+                  setState(() {
+                    _selectedFilterOptions.remove(value);
+                  });
+                },
+              ),
             ),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.person,
-              color: Color(0xFF367D5F),
+            Container(
+              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
+              alignment: Alignment.centerLeft,
+              child: const Text(
+                'Beliebte Rezepte',
+                style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold
+                ),
+              ),
             ),
-            label: 'Profil',
-          ),
-        ],
-      ),
-      resizeToAvoidBottomInset: false,
-    );
+            Expanded(
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                  itemCount: _recipes.length,
+                  itemBuilder: (context, index) {
+                    return RecipeCard(
+                      title: _recipes[index].name,
+                      cookTime: _recipes[index].totalTime,
+                      rating: _recipes[index].rating.toString(),
+                      thumbnailUrl: _recipes[index].images,
+                      onTap: () {
+                        setState(() {
+                          currentPageIndex = 2;
+                        });
+                      },
+                    );
+                  },
+                )
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+
+          },
+        ),
+      );
+    } else if (currentPageIndex == 2) {
+      return RecipeDetailPage();
+    } else {
+      throw UnimplementedError('no widget for $currentPageIndex');
+    }
   }
-}*/
+}
