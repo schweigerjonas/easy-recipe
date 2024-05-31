@@ -6,6 +6,8 @@ import 'package:easy_recipe/recipe_card.dart';
 import 'filter_option.dart';
 import 'models/recipe.dart';
 
+//TODO: Add colors as variables to reduce redundancy
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -14,8 +16,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
   late List<Recipe> _recipes = [];
-  int randomRecipeCount = 0;
+  int randomRecipeCount = 5;
   bool _isLoading = true;
 
   int currentPageIndex = 1;
@@ -90,10 +93,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       //Top Search Bar
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Center(
-          child: Text('EasyRecipe'),
+          child: Text('EasyRecipe',
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ),
-        //backgroundColor: const Color(0xFF4CAD85),
         automaticallyImplyLeading: false,
       ),
 
@@ -101,27 +110,41 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+            color: Theme.of(context).colorScheme.primary,
+            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
             child: Row(
               children: <Widget>[
                 const Expanded(
                   child: TextField(
-                    style: TextStyle(height: 1),
+                    style: TextStyle(
+                      height: 1.0,
+                      color: Color(0xFF8D8D8D),
+                    ),
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       hintText: 'Search',
-                      border: OutlineInputBorder(),
+                      hintStyle: TextStyle(
+                        color: Color(0xFF8D8D8D),
+                      ),
+                      filled: true,
                       fillColor: Color(0xFFFFFFFF),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ),
                 const SizedBox(width: 8.0),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
                   onPressed: () {
                     _showMultiSelect(context);
                   },
                   child:
-                      const Icon(Icons.filter_list, color: Color(0xFF367D5F)),
+                      const Icon(
+                          Icons.filter_list,
+                          color: Color(0xFF3D3D3D)
+                      ),
                 ),
               ],
             ),
@@ -144,8 +167,7 @@ class _HomePageState extends State<HomePage> {
             child: const Text(
               'Suggested Recipes',
               style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold
+                  fontSize: 20.0,
               ),
             ),
           ),
@@ -170,43 +192,56 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        child: const Icon(
+          Icons.add,
+          color: Color(0xFF3D3D3D),
+        ),
         onPressed: () {
 
         },
       ),
       //Navigation
-      bottomNavigationBar: NavigationBar(
-        labelBehavior: labelBehavior,
-        selectedIndex: currentPageIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(
-              Icons.book,
-              color: Color(0xFF367D5F),
+      bottomNavigationBar: Container(
+        color: Theme.of(context).colorScheme.primary,
+        padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+        child: BottomNavigationBar(
+          elevation: 0.0,
+          type: BottomNavigationBarType.shifting,
+          showUnselectedLabels: false,
+          currentIndex: currentPageIndex,
+          onTap: (int index) {
+            setState(() {
+              currentPageIndex = index;
+            });
+          },
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              icon: const Icon(
+                Icons.book,
+                color: Color(0xFFFFFFFF),
+              ),
+              label: 'My Recipes',
             ),
-            label: 'My Recipes',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.home,
-              color: Color(0xFF367D5F),
+            BottomNavigationBarItem(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              icon: const Icon(
+                Icons.home,
+                color: Color(0xFFFFFFFF),
+              ),
+              label: 'Home',
             ),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(
-              Icons.person,
-              color: Color(0xFF367D5F),
+          BottomNavigationBarItem(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              icon: const Icon(
+                Icons.person,
+                color: Color(0xFFFFFFFF),
+              ),
+              label: 'Profile',
             ),
-            label: 'Profile',
-          ),
-        ],
+          ],
+        ),
       ),
       resizeToAvoidBottomInset: false,
     );
