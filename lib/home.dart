@@ -64,13 +64,16 @@ class _HomePageState extends State<HomePage> {
     searchController.dispose();
     super.dispose();
   }
-/*
-  Future<void> getRecipes(String name) async {
-    _recipes = await RecipeApi.getRecipe(name);
+
+  Future<void> getRecipesByName(String name) async {
+    setState(() {
+      _isLoading = true;
+    });
+    _recipes = await RecipeApi().getRecipeByName(name);
     setState(() {
       _isLoading = false;
     });
-  }*/
+  }
 
   Future<void> getRecipes() async {
     _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
@@ -132,8 +135,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       controller: searchController,
                       onSubmitted: (String text) {
-                        //getRecipes(searchController.text);
-                        currentPageIndex = 1;
+                        getRecipesByName(searchController.text);
                       },
                     ),
                   ),

@@ -34,7 +34,21 @@ class RecipeApi {
     }
   }
 
-  Future<List<Recipe>> searchRecipes(String query, List<FilterOption> filterOptions, int number) async {
+  Future<List<Recipe>> getRecipeByName(String name) async {
+    final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$name&apiKey=$_apiKey'));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      List<Recipe> recipes = (jsonResponse['results'] as List)
+          .map((data) => Recipe.fromJson(data))
+          .toList();
+      return recipes;
+    } else {
+      throw Exception('Failed to get recipes.');
+    }
+  }
+
+  Future<List<Recipe>> searchRecipes(String query, /*List<FilterOption> filterOptions,*/ int number) async {
     //TODO: Use filter options as search params
 
     final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$query&number=$number&apiKey=$_apiKey'));
