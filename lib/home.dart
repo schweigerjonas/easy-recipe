@@ -7,8 +7,6 @@ import 'package:easy_recipe/recipe_card.dart';
 import 'filter_option.dart';
 import 'recipe_detail.dart';
 
-//TODO: Add colors as variables to reduce redundancy
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -111,7 +109,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Container(
               color: Theme.of(context).colorScheme.primary,
-              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 12.0),
               child: Row(
                 children: <Widget>[
                   Expanded(
