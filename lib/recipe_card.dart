@@ -5,12 +5,15 @@ class RecipeCard extends StatelessWidget {
   final int cookingTime;
   final String thumbnailUrl;
   final VoidCallback onTap;
+  final int id;
 
-  const RecipeCard({super.key, 
+  const RecipeCard({
+    super.key,
     required this.title,
     required this.cookingTime,
     required this.thumbnailUrl,
     required this.onTap,
+    required this.id
   });
   @override
   Widget build(BuildContext context) {
