@@ -206,10 +206,10 @@ class _HomePageState extends State<HomePage> {
                         cookingTime: recipe.cookingTime,
                         thumbnailUrl: recipe.image,
                         id: recipe.id,
-                        onTap: () {
+                        onTap: () async {
+                          idRecipeClicked = recipe.id;
+                          await getInformation(idRecipeClicked);
                           setState(() {
-                            idRecipeClicked = recipe.id;
-                            getInformation(idRecipeClicked);
                             currentPageIndex = 2;
                           });
                         },
