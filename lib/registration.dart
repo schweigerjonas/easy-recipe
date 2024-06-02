@@ -1,18 +1,18 @@
-import 'package:easy_recipe/registration.dart';
 import 'package:flutter/material.dart';
 
-import 'app.dart';
+import 'login.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegistrationPage> createState() => _RegistrationPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegistrationPageState extends State<RegistrationPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,32 +58,40 @@ class _LoginPageState extends State<LoginPage> {
               obscureText: true,
             ),
             const SizedBox(height: 12.0),
+            TextField(
+              controller: _confirmPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Confirm password',
+                labelStyle: TextStyle(
+                  color: Color(0xFF8D8D8D),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              obscureText: true,
+            ),
+            const SizedBox(height: 12.0),
             ElevatedButton(
-              child: Text('LOGIN',
+              child: Text('REGISTER',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MyHomePage(),
-                  ),
-                );
+                Navigator.pop(context);
               },
             ),
             const SizedBox(height: 280.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                const Text("Don't have an Account?  ",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                const Text("Already have an account?  ",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
                 InkWell(
-                  child: Text('Register',
+                  child: Text('Sign in',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
@@ -91,12 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegistrationPage(),
-                      ),
-                    );
+                    Navigator.pop(context);
                   },
                 ),
               ],
