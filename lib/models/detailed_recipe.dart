@@ -8,6 +8,7 @@ class DetailedRecipe {
   final bool isVegetarian;
   final String summary;
   final double score;
+  final List<String> ingredients;
 
   DetailedRecipe({
     required this.title,
@@ -18,7 +19,8 @@ class DetailedRecipe {
     required this.isVegan,
     required this.isVegetarian,
     required this.summary,
-    required this.score
+    required this.score,
+    required this.ingredients
   });
 
   factory DetailedRecipe.fromJson(dynamic json) {
@@ -31,7 +33,8 @@ class DetailedRecipe {
         isVegan: json['vegan'] as bool,
         isVegetarian: json['vegetarian'] as bool,
         summary: json['summary'] as String,
-        score: json['spoonacularScore'] as double
+        score: json['spoonacularScore'] as double,
+        ingredients: fetchIngredients(json)
     );
   }
 
@@ -39,6 +42,14 @@ class DetailedRecipe {
     return snapshot.map((data) {
       return DetailedRecipe.fromJson(data);
     }).toList();
+  }
+
+  static List<String> fetchIngredients(dynamic json) {
+    List<String> ingredients = [];
+    for (var i=0; i<json['extendedIngredients'].length; i++) {
+      ingredients.add(json['extendedIngredients'][i]['original']);
+    }
+    return ingredients;
   }
 
   @override

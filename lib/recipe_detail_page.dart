@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class RecipeDetailPage extends StatelessWidget {
   final int idRecipe;
@@ -12,6 +12,7 @@ class RecipeDetailPage extends StatelessWidget {
   final bool isVegetarian;
   final String summary;
   final double score;
+  final List<String> ingredients;
 
   const RecipeDetailPage({
     super.key,
@@ -24,7 +25,8 @@ class RecipeDetailPage extends StatelessWidget {
     required this.isVegan,
     required this.isVegetarian,
     required this.summary,
-    required this.score
+    required this.score,
+    required this.ingredients
   });
 
   @override
@@ -38,8 +40,13 @@ class RecipeDetailPage extends StatelessWidget {
     }
     double scoreRounded = ((score*100).roundToDouble()) / 100;
 
+    String ingredientsList = '';
+    for (int i=0; i<ingredients.length; i++) {
+      ingredientsList = '$ingredientsList - ${ingredients[i]} \n';
+    }
+
     return Scaffold(
-      body: Column(
+      body: ListView(
         children: [
           Container(
             margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
@@ -162,9 +169,25 @@ class RecipeDetailPage extends StatelessWidget {
                 )
               ]
           ),
-          Expanded(
-            child: Text(summary),
-          )
+          Container(
+            margin: const EdgeInsets.all(10),
+            child: Html(
+              data: summary,
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+            child: const Text('Ingredients',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
+            child: Text(ingredientsList),
+          ),
         ],
       ),
     );

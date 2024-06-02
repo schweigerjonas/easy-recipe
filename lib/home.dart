@@ -258,6 +258,7 @@ class _HomePageState extends State<HomePage> {
           servings: _detailedRecipe.servings,
           summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
           score: _detailedRecipe.score,
+          ingredients: _detailedRecipe.ingredients,
         ),
       );
     } else {
