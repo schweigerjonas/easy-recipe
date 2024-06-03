@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:easy_recipe/models/recipe.dart';
+import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:http/http.dart' as http;
 
 import '../filter_option.dart';
@@ -10,11 +11,12 @@ class RecipeApi {
   //TODO: in .env Datei auslagern
   final String _apiKey = 'faa10ae21f424bafada3be00631ec0fa';
 
-  Future<Map<String, dynamic>> getRecipeInformation(int recipeId) async {
+  Future<DetailedRecipe> getRecipeInformation(int recipeId) async {
     final response = await http.get(Uri.parse('$_baseUrl/recipes/$recipeId/information?apiKey=$_apiKey'));
-
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      final jsonResponse = jsonDecode(response.body);
+      DetailedRecipe recipe = DetailedRecipe.fromJson(jsonResponse);
+      return recipe;
     } else {
       throw Exception('Failed to load recipe.');
     }
@@ -34,7 +36,21 @@ class RecipeApi {
     }
   }
 
-  Future<List<Recipe>> searchRecipes(String query, List<FilterOption> filterOptions, int number) async {
+  Future<List<Recipe>> getRecipeByName(String name) async {
+    final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$name&apiKey=$_apiKey'));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      List<Recipe> recipes = (jsonResponse['results'] as List)
+          .map((data) => Recipe.fromJson(data))
+          .toList();
+      return recipes;
+    } else {
+      throw Exception('Failed to get recipes.');
+    }
+  }
+
+  Future<List<Recipe>> searchRecipes(String query, /*List<FilterOption> filterOptions,*/ int number) async {
     //TODO: Use filter options as search params
 
     final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$query&number=$number&apiKey=$_apiKey'));
@@ -45,6 +61,17 @@ class RecipeApi {
           .map((data) => Recipe.fromJson(data))
           .toList();
       return recipes;
+    } else {
+      throw Exception('Failed to find recipes with specified parameters.');
+    }
+  }
+  
+  Future<DetailedRecipe> getRecipeDetails(int id) async {
+    final response = await http.get(Uri.parse('$_baseUrl/recipes/$id/information?apiKey=$_apiKey'));
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      DetailedRecipe recipe = jsonResponse as DetailedRecipe;
+      return recipe;
     } else {
       throw Exception('Failed to find recipes with specified parameters.');
     }

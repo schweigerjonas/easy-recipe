@@ -1,3 +1,4 @@
+import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
@@ -5,7 +6,7 @@ import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 
 import 'filter_option.dart';
-import 'recipe_detail.dart';
+import 'recipe_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +22,8 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = true;
   final searchController = TextEditingController();
   int currentPageIndex = 1;
+  late int idRecipeClicked;
+  late DetailedRecipe _detailedRecipe;
   NavigationDestinationLabelBehavior labelBehavior =
       NavigationDestinationLabelBehavior.onlyShowSelected;
 
@@ -62,16 +65,29 @@ class _HomePageState extends State<HomePage> {
     searchController.dispose();
     super.dispose();
   }
-/*
-  Future<void> getRecipes(String name) async {
-    _recipes = await RecipeApi.getRecipe(name);
+
+  Future<void> getRecipesByName(String name) async {
+    setState(() {
+      _isLoading = true;
+    });
+    _recipes = await RecipeApi().getRecipeByName(name);
     setState(() {
       _isLoading = false;
     });
-  }*/
+  }
 
   Future<void> getRecipes() async {
     _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  Future<void> getInformation(int id) async {
+    setState(() {
+      _isLoading = true;
+    });
+    _detailedRecipe = await RecipeApi().getRecipeInformation(id);
     setState(() {
       _isLoading = false;
     });
@@ -130,8 +146,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       controller: searchController,
                       onSubmitted: (String text) {
-                        //getRecipes(searchController.text);
-                        currentPageIndex = 1;
+                        getRecipesByName(searchController.text);
                       },
                     ),
                   ),
@@ -178,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
-                    itemCount: randomRecipeCount,
+                    itemCount: _recipes.length,
                     itemBuilder: (context, index) {
                       final recipe = _recipes[index];
 
@@ -188,7 +203,10 @@ class _HomePageState extends State<HomePage> {
                         title: decodedTitle,
                         cookingTime: recipe.cookingTime,
                         thumbnailUrl: recipe.image,
-                        onTap: () {
+                        id: recipe.id,
+                        onTap: () async {
+                          idRecipeClicked = recipe.id;
+                          await getInformation(idRecipeClicked);
                           setState(() {
                             currentPageIndex = 2;
                           });
@@ -211,7 +229,37 @@ class _HomePageState extends State<HomePage> {
         ),
       );
     } else if (currentPageIndex == 2) {
-      return RecipeDetailPage();
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xffe0e0e0),
+          title: IconButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 1;
+              });
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Color(0xFF3D3D3D),
+            ),
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: RecipeDetailPage(
+          idRecipe: idRecipeClicked,
+          title: RecipeApi().decodeSpecialCharacters(_detailedRecipe.title),
+          cookingTime: _detailedRecipe.cookingTime,
+          id: _detailedRecipe.id,
+          image: _detailedRecipe.image,
+          isVegan: _detailedRecipe.isVegan,
+          isVegetarian: _detailedRecipe.isVegetarian,
+          servings: _detailedRecipe.servings,
+          summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
+          score: _detailedRecipe.score,
+          ingredients: _detailedRecipe.ingredients,
+          instructions: _detailedRecipe.instructions
+        ),
+      );
     } else {
       throw UnimplementedError('no widget for $currentPageIndex');
     }
