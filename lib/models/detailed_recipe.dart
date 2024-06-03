@@ -1,3 +1,5 @@
+import 'package:easy_recipe/models/recipe.api.dart';
+
 class DetailedRecipe {
   final String title;
   final String image;
@@ -9,6 +11,7 @@ class DetailedRecipe {
   final String summary;
   final double score;
   final List<String> ingredients;
+  final String instructions;
 
   DetailedRecipe({
     required this.title,
@@ -20,7 +23,8 @@ class DetailedRecipe {
     required this.isVegetarian,
     required this.summary,
     required this.score,
-    required this.ingredients
+    required this.ingredients,
+    required this.instructions
   });
 
   factory DetailedRecipe.fromJson(dynamic json) {
@@ -34,7 +38,8 @@ class DetailedRecipe {
         isVegetarian: json['vegetarian'] as bool,
         summary: json['summary'] as String,
         score: json['spoonacularScore'] as double,
-        ingredients: fetchIngredients(json)
+        ingredients: fetchIngredients(json),
+        instructions: json['instructions'] as String
     );
   }
 
@@ -47,7 +52,7 @@ class DetailedRecipe {
   static List<String> fetchIngredients(dynamic json) {
     List<String> ingredients = [];
     for (var i=0; i<json['extendedIngredients'].length; i++) {
-      ingredients.add(json['extendedIngredients'][i]['original']);
+      ingredients.add(RecipeApi().decodeSpecialCharacters(json['extendedIngredients'][i]['original']));
     }
     return ingredients;
   }

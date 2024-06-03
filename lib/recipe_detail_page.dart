@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class RecipeDetailPage extends StatelessWidget {
   final int idRecipe;
@@ -13,6 +14,7 @@ class RecipeDetailPage extends StatelessWidget {
   final String summary;
   final double score;
   final List<String> ingredients;
+  final String instructions;
 
   const RecipeDetailPage({
     super.key,
@@ -26,7 +28,8 @@ class RecipeDetailPage extends StatelessWidget {
     required this.isVegetarian,
     required this.summary,
     required this.score,
-    required this.ingredients
+    required this.ingredients,
+    required this.instructions
   });
 
   @override
@@ -154,7 +157,7 @@ class RecipeDetailPage extends StatelessWidget {
                       child: Row(
                         children: [
                           const Icon(
-                            Icons.food_bank_outlined,
+                            MdiIcons.leaf,
                             size: 18,
                           ),
                           const SizedBox(width: 7),
@@ -187,6 +190,21 @@ class RecipeDetailPage extends StatelessWidget {
           Container(
             margin: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
             child: Text(ingredientsList),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+            child: const Text('Instructions',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
+            child: Html(
+              data: instructions,
+            ),
           ),
         ],
       ),
