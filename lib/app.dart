@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'home.dart';
+import 'login.dart';
 
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
@@ -20,7 +21,12 @@ class RecipeApp extends StatelessWidget {
             ),
           ),
           title: 'Easy Recipe',
-          home: MyHomePage(),
+          //home: MyHomePage(),
+          initialRoute: '/login',
+          routes: {
+            '/login': (BuildContext context) => const LoginPage(),
+            '/': (BuildContext context) => const MyHomePage(),
+          },
         ),
       );
   }
@@ -30,6 +36,8 @@ class MyAppState extends ChangeNotifier {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<StatefulWidget> createState() =>
       _MyHomePageState();
