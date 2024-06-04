@@ -3,8 +3,6 @@ import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:http/http.dart' as http;
 
-import '../filter_option.dart';
-
 class RecipeApi {
 
   final String _baseUrl = 'https://api.spoonacular.com';
@@ -50,28 +48,17 @@ class RecipeApi {
     }
   }
 
-  Future<List<Recipe>> searchRecipes(String query, /*List<FilterOption> filterOptions,*/ int number) async {
+  Future<List<Recipe>> searchRecipes(String query) async {
     //TODO: Use filter options as search params
 
-    final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$query&number=$number&apiKey=$_apiKey'));
+    final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&$query&apiKey=$_apiKey'));
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
-      List<Recipe> recipes = (jsonResponse['recipes'] as List)
+      List<Recipe> recipes = (jsonResponse['results'] as List)
           .map((data) => Recipe.fromJson(data))
           .toList();
       return recipes;
-    } else {
-      throw Exception('Failed to find recipes with specified parameters.');
-    }
-  }
-  
-  Future<DetailedRecipe> getRecipeDetails(int id) async {
-    final response = await http.get(Uri.parse('$_baseUrl/recipes/$id/information?apiKey=$_apiKey'));
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      DetailedRecipe recipe = jsonResponse as DetailedRecipe;
-      return recipe;
     } else {
       throw Exception('Failed to find recipes with specified parameters.');
     }
