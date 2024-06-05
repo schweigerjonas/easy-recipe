@@ -31,11 +31,13 @@ class _HomePageState extends State<HomePage> {
     FilterOption(id: 0, name: '30min'),
     FilterOption(id: 1, name: '45min'),
     FilterOption(id: 2, name: '60min'),
+
     FilterOption(id: 3, name: 'vegetarian'),
     FilterOption(id: 4, name: 'vegan'),
     FilterOption(id: 5, name: 'dairy-free'),
     FilterOption(id: 6, name: 'gluten-free'),
     FilterOption(id: 7, name: 'ketogenic'),
+
     FilterOption(id: 8, name: 'breakfast'),
     FilterOption(id: 9, name: 'lunch'),
     FilterOption(id: 10, name: 'dinner'),
@@ -84,7 +86,11 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> searchRecipesByFilter() async {
     int maxTime = 0;
-    String diet = '';
+    String timeQuery = '';
+    List<String> diets = [];
+    String dietQuery = '';
+    List<String> types = [];
+    String typeQuery = '';
     String query = '';
     for (FilterOption f in _selectedFilterOptions) {
       if (f.id == 0) {
@@ -96,21 +102,51 @@ class _HomePageState extends State<HomePage> {
       if (f.id == 2) {
         maxTime = 60;
       }
-      if (f.id == 3) {
-        diet = 'vegetarian';
+
+      if (f.id >= 3 && f.id <= 7) {
+        diets.add(f.name);
       }
-      if (f.id == 4) {
-        diet = 'vegan';
+
+      if (f.id >= 8 && f.id <= 14) {
+        types.add(f.name);
       }
     }
     if (maxTime != 0) {
-      query = 'maxReadyTime=${maxTime.toString()}';
+      timeQuery = 'maxReadyTime=${maxTime.toString()}';
     }
-    if (diet != '') {
-      if (query != '') {
-        query += '&diet=$diet';
+    if (diets.isNotEmpty) {
+      dietQuery = 'diet=';
+      for (var i=0; i<diets.length; i++) {
+        if (i != 0) {
+          dietQuery += '&';
+        }
+        dietQuery += diets[i];
+      }
+    }
+    if (types.isNotEmpty) {
+      typeQuery = 'type=';
+      for (var i=0; i<types.length; i++) {
+        if (i != 0) {
+          typeQuery += '&';
+        }
+        typeQuery += types[i];
+      }
+    }
+    if (timeQuery != '') {
+      query = timeQuery;
+    }
+    if (dietQuery != '') {
+      if (query == '') {
+        query = dietQuery;
       } else {
-        query = 'diet=$diet';
+        query += '&$dietQuery';
+      }
+    }
+    if (typeQuery != '') {
+      if (query == '') {
+        query = typeQuery;
+      } else {
+        query += '&$typeQuery';
       }
     }
     setState(() {
@@ -119,6 +155,7 @@ class _HomePageState extends State<HomePage> {
     if (query == '') {
       await getRecipes();
     } else {
+      print(query);
       _recipes = await RecipeApi().searchRecipes(query);
     }
     setState(() {
@@ -155,7 +192,7 @@ class _HomePageState extends State<HomePage> {
               searchRecipesByFilter();
             });
           },
-          /* //to many API calls
+          /*//to many API calls
           onSelectionChanged: (values) {
             setState(() {
               _selectedFilterOptions = values;
