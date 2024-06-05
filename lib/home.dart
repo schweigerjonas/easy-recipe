@@ -4,8 +4,6 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider, PhoneAuthProvider;
 
 import 'filter_option.dart';
 import 'recipe_detail_page.dart';
