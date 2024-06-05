@@ -1,8 +1,90 @@
+import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider, PhoneAuthProvider;
+import 'package:easy_recipe/firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'home.dart';
-import 'login.dart';
+// import 'login.dart';
+
+final _router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/sign-in',
+      builder: (context, state) {
+        return SignInScreen(
+          actions: [
+            ForgotPasswordAction(((context, email) {
+              final uri = Uri(
+                path: '/sign-in/forgot-password',
+                queryParameters: <String, String?>{
+                  'email': email,
+                },
+              );
+              context.push(uri.toString());
+            })),
+            AuthStateChangeAction(((context, state) {
+              final user = switch (state) {
+                SignedIn state => state.user,
+                UserCreated state => state.credential.user,
+                _ => null
+              };
+              if (user == null) {
+                return;
+              }
+              if (state is UserCreated) {
+                user.updateDisplayName(user.email!.split('@')[0]);
+              }
+              if (!user.emailVerified) {
+                user.sendEmailVerification();
+                const snackBar = SnackBar(
+                  content: Text(
+                      'Please check your email to verify your email address.'
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+              context.pushReplacement('/');
+            })),
+          ],
+        );
+      },
+      routes: [
+        GoRoute(
+          path: 'forgot-password',
+          builder: (context, state) {
+            final arguments = state.uri.queryParameters;
+            return ForgotPasswordScreen(
+              email: arguments['email'],
+              headerMaxExtent: 200,
+            );
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) {
+        return ProfileScreen(
+          providers: const [],
+          actions: [
+            SignedOutAction((context) {
+              context.pushReplacement('/');
+            }),
+          ],
+        );
+      },
+    ),
+    GoRoute(
+      path: '/',
+      builder: (context, state) {
+        return const MyHomePage();
+      },
+    ),
+  ],
+);
 
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
@@ -10,8 +92,9 @@ class RecipeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return ChangeNotifierProvider(
-        create: (context) => MyAppState(),
-        child: MaterialApp(
+        create: (context) => ApplicationState(),
+        child: MaterialApp.router(
+          title: 'Easy Recipe',
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
@@ -20,19 +103,36 @@ class RecipeApp extends StatelessWidget {
               secondary: const Color(0xFFFF574D),
             ),
           ),
-          title: 'Easy Recipe',
-          //home: MyHomePage(),
-          initialRoute: '/login',
-          routes: {
-            '/login': (BuildContext context) => const LoginPage(),
-            '/': (BuildContext context) => const MyHomePage(),
-          },
+          routerConfig: _router,
         ),
       );
   }
 }
 
-class MyAppState extends ChangeNotifier {
+class ApplicationState extends ChangeNotifier {
+  ApplicationState() {
+    init();
+  }
+
+  bool _loggedIn = false;
+  bool get loggedIn => _loggedIn;
+
+  Future<void> init() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+    FirebaseUIAuth.configureProviders([
+      EmailAuthProvider(),
+    ]);
+
+    FirebaseAuth.instance.userChanges().listen((user) {
+      if (user != null) {
+        _loggedIn = true;
+      } else {
+        _loggedIn = false;
+      }
+      notifyListeners();
+    });
+  }
 }
 
 class MyHomePage extends StatefulWidget {
