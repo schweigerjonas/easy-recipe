@@ -1,9 +1,11 @@
+import 'package:easy_recipe/profile.dart';
+import 'package:easy_recipe/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'application_state.dart';
 import 'home.dart';
-import 'router.dart';
+
 
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = const HomePage();
         break;
       case 2:
-        page = const Placeholder();
+        page = const ProfilePage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');
