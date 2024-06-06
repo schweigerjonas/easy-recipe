@@ -1,8 +1,11 @@
+import 'package:easy_recipe/profile.dart';
+import 'package:easy_recipe/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'application_state.dart';
 import 'home.dart';
-import 'login.dart';
+
 
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
@@ -10,8 +13,9 @@ class RecipeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
       return ChangeNotifierProvider(
-        create: (context) => MyAppState(),
-        child: MaterialApp(
+        create: (context) => ApplicationState(),
+        child: MaterialApp.router(
+          title: 'Easy Recipe',
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
@@ -20,19 +24,10 @@ class RecipeApp extends StatelessWidget {
               secondary: const Color(0xFFFF574D),
             ),
           ),
-          title: 'Easy Recipe',
-          //home: MyHomePage(),
-          initialRoute: '/login',
-          routes: {
-            '/login': (BuildContext context) => const LoginPage(),
-            '/': (BuildContext context) => const MyHomePage(),
-          },
+          routerConfig: getRouter(),
         ),
       );
   }
-}
-
-class MyAppState extends ChangeNotifier {
 }
 
 class MyHomePage extends StatefulWidget {
@@ -57,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
         page = const HomePage();
         break;
       case 2:
-        page = const Placeholder();
+        page = const ProfilePage();
         break;
       default:
         throw UnimplementedError('no widget for $selectedIndex');

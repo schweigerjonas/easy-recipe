@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
                     child:
                     const Icon(
                         Icons.filter_list,
-                        color: Color(0xFF3D3D3D)
+                        color: Color(0xFF3D3D3D),
                     ),
                   ),
                 ],
