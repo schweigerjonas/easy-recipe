@@ -5,6 +5,7 @@ import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 
+import 'create_recipe.dart';
 import 'filter_option.dart';
 import 'recipe_detail_page.dart';
 
@@ -224,7 +225,9 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFF3D3D3D),
           ),
           onPressed: () {
-
+            setState(() {
+              currentPageIndex = 3;
+            });
           },
         ),
       );
@@ -259,6 +262,25 @@ class _HomePageState extends State<HomePage> {
           ingredients: _detailedRecipe.ingredients,
           instructions: _detailedRecipe.instructions
         ),
+      );
+    } else if (currentPageIndex == 3) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xffe0e0e0),
+          title: IconButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 1;
+              });
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Color(0xFF3D3D3D),
+            ),
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: const CreateRecipePage(),
       );
     } else {
       throw UnimplementedError('no widget for $currentPageIndex');
