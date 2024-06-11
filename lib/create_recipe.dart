@@ -1,6 +1,9 @@
 import 'package:easy_recipe/set_recipe_information.dart';
 import 'package:easy_recipe/set_recipe_ingredients.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'creation_model.dart';
 
 class CreateRecipePage extends StatefulWidget {
   const CreateRecipePage({super.key});
@@ -10,7 +13,6 @@ class CreateRecipePage extends StatefulWidget {
 }
 
 class _CreateRecipePageState extends State<CreateRecipePage> {
-  int currentPageIndex = 0;
   final screens = [
     const SetRecipeInformation(),
     const SetRecipeIngredients(),
@@ -18,8 +20,10 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: screens[currentPageIndex],
+    return Consumer<CreationModel>(
+      builder: (context, creation, child) {
+        return screens[creation.currentPageIndex];
+      }
     );
   }
 }

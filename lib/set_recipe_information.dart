@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'creation_model.dart';
 import 'dynamic_widget.dart';
-
-enum UnitLabel {
-  select('-select a unit-'),
-  milliliter('ml'),
-  liter('l'),
-  gram('g'),
-  kilogram('kg'),
-  teaspoon('tsp'),
-  tablespoon('tbsp');
-
-  const UnitLabel(this.label);
-
-  final String label;
-}
 
 class SetRecipeInformation extends StatefulWidget {
   const SetRecipeInformation({super.key});
@@ -24,7 +12,6 @@ class SetRecipeInformation extends StatefulWidget {
 }
 
 class _SetRecipeInformationState extends State<SetRecipeInformation> {
-  UnitLabel? selectedUnit;
   final recipeNameController = TextEditingController();
   final portionController = TextEditingController();
 
@@ -77,26 +64,9 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  const Text('Ingredients and quantities'),
-                  const SizedBox(height: 16.0),
-                  DropdownMenu<UnitLabel>(
-                    initialSelection: UnitLabel.select,
-                    onSelected: (UnitLabel? unit) {
-                      setState(() {
-                        selectedUnit = unit;
-                      });
-                    },
-                    dropdownMenuEntries: UnitLabel.values
-                        .map<DropdownMenuEntry<UnitLabel>>((UnitLabel unit) {
-                      return DropdownMenuEntry<UnitLabel>(
-                        value: unit,
-                        label: unit.label,
-                      );
-                    }).toList(),
-                  ),
                   ElevatedButton(
                     onPressed: () {
-                      
+                      Provider.of<CreationModel>(context, listen: false).setPageIndex(1);
                     },
                     child: const Text('Next Step'),
                   )
