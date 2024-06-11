@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'application_state.dart';
 import 'home.dart';
+import 'my_recipe_page.dart';
 
 
 class RecipeApp extends StatelessWidget {
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = const Placeholder();
+        page = const MyRecipePage();
         break;
       case 1:
         page = const HomePage();

@@ -1,9 +1,12 @@
+import 'package:easy_recipe/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
+import 'package:easy_recipe/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
+import 'package:provider/provider.dart';
 
 import 'filter_option.dart';
 import 'recipe_detail_page.dart';
@@ -155,7 +158,6 @@ class _HomePageState extends State<HomePage> {
     if (query == '') {
       await getRecipes();
     } else {
-      print(query);
       _recipes = await RecipeApi().searchRecipes(query);
     }
     setState(() {
@@ -300,6 +302,14 @@ class _HomePageState extends State<HomePage> {
                             currentPageIndex = 2;
                           });
                         },
+                        markAsFavorite: () {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            currentPageIndex = 4;
+                          });
+                        },
+                        loggedInState: Provider.of<ApplicationState>(context).loggedIn,
+                        userId: 1,
                       );
                     }
                 )
@@ -313,7 +323,6 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFF3D3D3D),
           ),
           onPressed: () {
-
           },
         ),
       );
@@ -349,7 +358,10 @@ class _HomePageState extends State<HomePage> {
           instructions: _detailedRecipe.instructions
         ),
       );
-    } else {
+    } else if (currentPageIndex == 4) {
+      return const ProfilePage();
+    }
+    else {
       throw UnimplementedError('no widget for $currentPageIndex');
     }
   }
