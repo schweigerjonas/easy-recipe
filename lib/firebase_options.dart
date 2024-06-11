@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     projectId: 'easy-recipe-d2500',
     storageBucket: 'easy-recipe-d2500.appspot.com',
   );
+
 }

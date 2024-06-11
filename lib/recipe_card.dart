@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'application_state.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
   final int cookingTime;
   final String thumbnailUrl;
   final VoidCallback onTap;
-  final VoidCallback markAsFavorite;
+  final VoidCallback markAsFavoriteNotLoggedIn;
+  final VoidCallback markAsFavoriteLoggedIn;
   final int id;
   final bool loggedInState;
   final int userId;
@@ -18,7 +22,8 @@ class RecipeCard extends StatelessWidget {
     required this.cookingTime,
     required this.thumbnailUrl,
     required this.onTap,
-    required this.markAsFavorite,
+    required this.markAsFavoriteNotLoggedIn,
+    required this.markAsFavoriteLoggedIn,
     required this.id,
     required this.loggedInState,
     required this.userId
@@ -33,7 +38,7 @@ class RecipeCard extends StatelessWidget {
         content: const Text('You need to be logged in to do this!'),
         actions: [
           TextButton(
-              onPressed: markAsFavorite,
+              onPressed: markAsFavoriteNotLoggedIn,
               child: const Text('LOGIN')
           ),
         ],
@@ -107,9 +112,10 @@ class RecipeCard extends StatelessWidget {
                               color: Colors.red,
                               size: 24,
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (loggedInState == true) {
                                 _isIconChanged.value = !isIconChanged;
+                                await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
                               } else {
                                 openDialog();
                               }
