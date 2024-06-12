@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'application_state.dart';
+import 'create_recipe.dart';
 import 'home.dart';
 import 'my_recipe_page.dart';
 
@@ -55,6 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = const ProfilePage();
         break;
+      case 3:
+        page = const CreateRecipePage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }

@@ -8,6 +8,8 @@ import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
 import 'package:provider/provider.dart';
 
+import 'create_recipe.dart';
+import 'creation_model.dart';
 import 'filter_option.dart';
 import 'recipe_detail_page.dart';
 
@@ -326,6 +328,9 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFF3D3D3D),
           ),
           onPressed: () {
+            setState(() {
+              currentPageIndex = 3;
+            });
           },
         ),
       );
@@ -359,6 +364,28 @@ class _HomePageState extends State<HomePage> {
           score: _detailedRecipe.score,
           ingredients: _detailedRecipe.ingredients,
           instructions: _detailedRecipe.instructions
+        ),
+      );
+    } else if (currentPageIndex == 3) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xffe0e0e0),
+          title: IconButton(
+            onPressed: () {
+              setState(() {
+                currentPageIndex = 1;
+              });
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios_new,
+              color: Color(0xFF3D3D3D),
+            ),
+          ),
+          automaticallyImplyLeading: false,
+        ),
+        body: ChangeNotifierProvider(
+          create: (context) => CreationModel(),
+          child: const CreateRecipePage(),
         ),
       );
     } else {
