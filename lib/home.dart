@@ -4,8 +4,10 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/recipe_card.dart';
+import 'package:provider/provider.dart';
 
 import 'create_recipe.dart';
+import 'creation_model.dart';
 import 'filter_option.dart';
 import 'recipe_detail_page.dart';
 
@@ -369,7 +371,10 @@ class _HomePageState extends State<HomePage> {
           ),
           automaticallyImplyLeading: false,
         ),
-        body: const CreateRecipePage(),
+        body: ChangeNotifierProvider(
+          create: (context) => CreationModel(),
+          child: const CreateRecipePage(),
+        ),
       );
     } else {
       throw UnimplementedError('no widget for $currentPageIndex');
