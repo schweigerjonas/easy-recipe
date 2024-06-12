@@ -14,6 +14,7 @@ class SetRecipeInformation extends StatefulWidget {
 class _SetRecipeInformationState extends State<SetRecipeInformation> {
   final recipeNameController = TextEditingController();
   final portionController = TextEditingController();
+  final timeController = TextEditingController();
 
   List<DynamicWidget> dynamicTextFields = [];
   List<String> ingredientsData = [];
@@ -61,6 +62,23 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                         ),
                       ),
                       const Text(' persons/portions.'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text('It takes '),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: TextField(
+                            decoration: const InputDecoration(
+                              hintText: 'eg. 25',
+                            ),
+                            controller: timeController,
+                          ),
+                        ),
+                      ),
+                      const Text('minutes to cook the whole recipe.'),
                     ],
                   ),
                   const SizedBox(height: 16.0),
