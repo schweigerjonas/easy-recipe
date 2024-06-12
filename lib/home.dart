@@ -1,5 +1,7 @@
+import 'package:easy_recipe/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
@@ -158,7 +160,6 @@ class _HomePageState extends State<HomePage> {
     if (query == '') {
       await getRecipes();
     } else {
-      print(query);
       _recipes = await RecipeApi().searchRecipes(query);
     }
     setState(() {
@@ -303,6 +304,17 @@ class _HomePageState extends State<HomePage> {
                             currentPageIndex = 2;
                           });
                         },
+                        markAsFavoriteNotLoggedIn: () {
+                          setState(() {
+                            Navigator.of(context).pop();
+                            context.go("/sign-in");
+                          });
+                        },
+                        markAsFavoriteLoggedIn: () {
+                          Provider.of<ApplicationState>(context).saveAsFavorite(recipe.id);
+                        },
+                        loggedInState: Provider.of<ApplicationState>(context).loggedIn,
+                        userId: 1,
                       );
                     }
                 )

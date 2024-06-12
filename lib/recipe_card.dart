@@ -1,22 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'application_state.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
   final int cookingTime;
   final String thumbnailUrl;
   final VoidCallback onTap;
+  final VoidCallback markAsFavoriteNotLoggedIn;
+  final VoidCallback markAsFavoriteLoggedIn;
   final int id;
+  final bool loggedInState;
+  final int userId;
 
-  const RecipeCard({
+  final ValueNotifier<bool> _isIconChanged = ValueNotifier<bool>(false);
+
+  RecipeCard({
     super.key,
     required this.title,
     required this.cookingTime,
     required this.thumbnailUrl,
     required this.onTap,
-    required this.id
+    required this.markAsFavoriteNotLoggedIn,
+    required this.markAsFavoriteLoggedIn,
+    required this.id,
+    required this.loggedInState,
+    required this.userId
   });
+
   @override
   Widget build(BuildContext context) {
+    Future openDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Login required'),
+        content: const Text('You need to be logged in to do this!'),
+        actions: [
+          TextButton(
+              onPressed: markAsFavoriteNotLoggedIn,
+              child: const Text('LOGIN')
+          ),
+        ],
+      ),
+    );
+
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -65,29 +93,45 @@ class RecipeCard extends StatelessWidget {
               ),
             ),
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.topRight,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    padding: const EdgeInsets.fromLTRB(4.0, 4.0, 6.0, 4.0),
                     margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          /*Icons.star,
-                          color: Colors.yellow,
-                          size: 18,
-                        ),
-                        const SizedBox(width: 7),
-                        Text(rating, style: const TextStyle(color: Colors.white),),
-                      ],
+                    child: ValueListenableBuilder(
+                      valueListenable: _isIconChanged,
+                      builder: (context, isIconChanged, child) {
+                        return IconButton(
+                            icon: Icon(
+                              isIconChanged ? Icons.favorite : Icons.favorite_border,
+                              color: Colors.red,
+                              size: 24,
+                            ),
+                            onPressed: () async {
+                              if (loggedInState == true) {
+                                _isIconChanged.value = !isIconChanged;
+                                await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
+                              } else {
+                                openDialog();
+                              }
+                            }
+                        );
+                      },
                     ),
                   ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Container(
                     padding: const EdgeInsets.all(5),
                     margin: const EdgeInsets.all(10),
@@ -97,7 +141,7 @@ class RecipeCard extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        const Icon(*/
+                        const Icon(
                           Icons.schedule,
                           color: Colors.yellow,
                           size: 18,
