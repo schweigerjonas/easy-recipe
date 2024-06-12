@@ -8,6 +8,8 @@ class DetailedRecipe {
   final int servings;
   final bool isVegan;
   final bool isVegetarian;
+  final bool isDairyFree;
+  final bool isGlutenFree;
   final String summary;
   final double score;
   final List<String> ingredients;
@@ -21,6 +23,8 @@ class DetailedRecipe {
     required this.servings,
     required this.isVegan,
     required this.isVegetarian,
+    required this.isDairyFree,
+    required this.isGlutenFree,
     required this.summary,
     required this.score,
     required this.ingredients,
@@ -36,6 +40,8 @@ class DetailedRecipe {
         servings: json['servings'] as int,
         isVegan: json['vegan'] as bool,
         isVegetarian: json['vegetarian'] as bool,
+        isDairyFree: json['dairyFree'] as bool,
+        isGlutenFree: json['glutenFree'] as bool,
         summary: json['summary'] as String,
         score: json['spoonacularScore'] as double,
         ingredients: fetchIngredients(json),

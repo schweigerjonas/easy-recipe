@@ -44,6 +44,8 @@ class ApplicationState extends ChangeNotifier {
       'servings': detailedRecipe.servings,
       'isVegan': detailedRecipe.isVegan,
       'isVegetarian': detailedRecipe.isVegetarian,
+      'isDairyFree': detailedRecipe.isDairyFree,
+      'isGlutenFree': detailedRecipe.isGlutenFree,
       'summary': detailedRecipe.summary,
       'score': detailedRecipe.score,
       'ingredients': detailedRecipe.ingredients,
