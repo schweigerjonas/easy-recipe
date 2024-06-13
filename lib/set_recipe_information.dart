@@ -21,75 +21,96 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
         children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            child: Text('Create Recipe',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 20.0,
-              ),
+          const Text(
+            'Create Recipe',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 20.0,
             ),
           ),
+          const SizedBox(height: 32.0),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  const Text('Recipe Name'),
-                  TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Recipe Name',
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                const Text(
+                  'Recipe Name',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'e.g. Pork Carnitas Tacos',
+                  ),
+                  controller: recipeNameController,
+                ),
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Portions',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    const Text('The recipe is designed for '),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: 'e.g. 4',
+                          ),
+                          controller: portionController,
+                        ),
+                      ),
                     ),
-                    controller: recipeNameController,
+                    const Text(' persons/portions.'),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Cooking Time',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
                   ),
-                  const SizedBox(height: 16.0),
-                  Row(
-                    children: <Widget>[
-                      const Text('The recipe is designed for '),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              labelText: 'Portions',
-                            ),
-                            controller: portionController,
+                ),
+                Row(
+                  children: [
+                    const Text('It takes '),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: 'e.g. 25',
                           ),
+                          controller: timeController,
                         ),
                       ),
-                      const Text(' persons/portions.'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text('It takes '),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              hintText: 'eg. 25',
-                            ),
-                            controller: timeController,
-                          ),
-                        ),
-                      ),
-                      const Text('minutes to cook the whole recipe.'),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      Provider.of<CreationModel>(context, listen: false).setPageIndex(1);
-                    },
-                    child: const Text('Next Step'),
-                  )
-                ],
-              ),
+                    ),
+                    const Text('min. to cook the whole recipe.'),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                ElevatedButton(
+                  onPressed: () {
+                    Provider.of<CreationModel>(context, listen: false)
+                        .setPageIndex(1);
+                  },
+                  child: const Text('Next Step'),
+                )
+              ],
             ),
           ),
         ],
