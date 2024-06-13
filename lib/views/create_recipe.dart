@@ -1,9 +1,9 @@
-import 'package:easy_recipe/set_recipe_information.dart';
-import 'package:easy_recipe/set_recipe_ingredients.dart';
+import 'package:easy_recipe/views/set_recipe_information.dart';
+import 'package:easy_recipe/views/set_recipe_ingredients.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'creation_model.dart';
+import '../models/creation_model.dart';
 
 class CreateRecipePage extends StatefulWidget {
   const CreateRecipePage({super.key});
