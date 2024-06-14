@@ -1,4 +1,5 @@
 import 'package:easy_recipe/models/home_model.dart';
+import 'package:easy_recipe/models/recipe_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,6 +18,8 @@ void main() {
         ChangeNotifierProvider(
             create: (context) => HomePageModel(),
         ),
+        ChangeNotifierProvider(
+            create: (context) => RecipeCardModel()),
       ],
       builder: ((context, child) => const RecipeApp()),
     ),

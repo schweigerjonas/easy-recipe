@@ -5,7 +5,6 @@ import 'filter_option.dart';
 
 class HomePageModel extends ChangeNotifier {
 
-  int randomRecipeCount = 5;
   List<Recipe> _recipes = [];
 
   List<FilterOption> _selectedFilterOptions = [];

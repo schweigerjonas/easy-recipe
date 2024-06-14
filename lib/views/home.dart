@@ -1,6 +1,7 @@
 import 'package:easy_recipe/models/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/models/home_model.dart';
+import 'package:easy_recipe/models/recipe_card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -54,18 +55,25 @@ class _HomePageState extends State<HomePage> {
   final _items = _filterOptions
       .map((filterOption) => MultiSelectItem<FilterOption>(filterOption, filterOption.name))
       .toList();
-
-  //List<FilterOption> _selectedFilterOptions = [];
-
+  
   @override
   void initState() {
-    //_selectedFilterOptions = Provider.of<HomePageModel>(context).getSelectedFilerOptions;
     super.initState();
     if (Provider.of<HomePageModel>(context, listen: false).getRecipes.isEmpty) {
       getRecipes();
     } else {
       setState(() {
         _isLoading = false;
+      });
+    }
+    initSavedRecipes();
+  }
+
+  Future<void> initSavedRecipes() async {
+    List<int> savedRecipes = await Provider.of<ApplicationState>(context, listen: false).getRecipeIDs();
+    if (mounted) {
+      setState(() {
+        Provider.of<RecipeCardModel>(context, listen: false).setSavedRecipes(savedRecipes);
       });
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +18,7 @@ class ApplicationState extends ChangeNotifier {
   bool get loggedIn => _loggedIn;
 
   Future<void> init() async {
+    WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
     FirebaseUIAuth.configureProviders([
@@ -52,5 +55,26 @@ class ApplicationState extends ChangeNotifier {
       'instructions': detailedRecipe.instructions,
       'userId': FirebaseAuth.instance.currentUser!.uid
     });
+  }
+
+  Future<List<int>> getRecipeIDs() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('recipes').where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+    List<int> recipes = snapshot.docs.map((doc) => doc['id'] as int).toList();
+    return recipes;
+  }
+
+  Future<void> deleteRecipe(int recipeId) async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('recipes')
+          .where('id', isEqualTo: recipeId)
+          .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        await FirebaseFirestore.instance.collection('recipes').doc(doc.id).delete();
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

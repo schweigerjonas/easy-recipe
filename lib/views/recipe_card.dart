@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/application_state.dart';
+import '../models/recipe_card_model.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
@@ -31,6 +32,10 @@ class RecipeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<RecipeCardModel>(context, listen: false).savedRecipes.contains(id)) {
+      _isIconChanged.value = true;
+    }
+
     Future openDialog() => showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -114,8 +119,13 @@ class RecipeCard extends StatelessWidget {
                             ),
                             onPressed: () async {
                               if (loggedInState == true) {
-                                _isIconChanged.value = !isIconChanged;
-                                await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
+                                if (_isIconChanged.value == false) {
+                                  _isIconChanged.value = true;
+                                  await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
+                                } else {
+                                  _isIconChanged.value = false;
+                                  await Provider.of<ApplicationState>(context, listen: false).deleteRecipe(id);
+                                }
                               } else {
                                 openDialog();
                               }
