@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_recipe/models/detailed_recipe.dart';
+import 'package:easy_recipe/models/recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider, PhoneAuthProvider;
@@ -59,12 +61,14 @@ class ApplicationState extends ChangeNotifier {
 
   Future<List<int>> getRecipeIDs() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('recipes').where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
     List<int> recipes = snapshot.docs.map((doc) => doc['id'] as int).toList();
     return recipes;
   }
 
-  Future<void> deleteRecipe(int recipeId) async {
+  Future<void> deleteRecipeFromFavorites(int recipeId) async {
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('recipes')
@@ -76,5 +80,53 @@ class ApplicationState extends ChangeNotifier {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<List<Recipe>> getSavedRecipes() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+
+    List<Recipe> recipes = [];
+    for (final document in snapshot.docs) {
+      var data = document.data() as Map<String, dynamic>;
+      recipes.add(
+        Recipe(
+          title: data['title'] as String,
+          image: data['image'] as String,
+          cookingTime: data['cookingTime'] as int,
+          id: data['id'] as int,
+        ),
+      );
+    }
+    return recipes;
+  }
+
+  Future<DetailedRecipe> getSavedRecipeDetails(int id) async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('recipes')
+        .where('id', isEqualTo: id)
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+
+    var data = snapshot.docs[0].data() as Map<String, dynamic>;
+    DetailedRecipe recipe = DetailedRecipe(
+        title: data['title'] as String,
+        image: data['image'] as String,
+        cookingTime: data['cookingTime'] as int,
+        id: data['id'] as int,
+        servings: data['servings'] as int,
+        isVegan: data['isVegan'] as bool,
+        isVegetarian: data['isVegetarian'] as bool,
+        isDairyFree: data['isDairyFree'] as bool,
+        isGlutenFree: data['isGlutenFree'] as bool,
+        summary: data['summary'] as String,
+        score: data['score'] as double,
+        ingredients: data['ingredients'] as List<String>,
+        instructions: data['instructions'] as String
+    );
+
+    return recipe;
   }
 }

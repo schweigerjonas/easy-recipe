@@ -124,7 +124,7 @@ class RecipeCard extends StatelessWidget {
                                   await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
                                 } else {
                                   _isIconChanged.value = false;
-                                  await Provider.of<ApplicationState>(context, listen: false).deleteRecipe(id);
+                                  await Provider.of<ApplicationState>(context, listen: false).deleteRecipeFromFavorites(id);
                                 }
                               } else {
                                 openDialog();

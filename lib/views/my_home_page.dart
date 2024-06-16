@@ -1,7 +1,9 @@
+import 'package:easy_recipe/models/application_state.dart';
+import 'package:easy_recipe/views/login_required_page.dart';
 import 'package:easy_recipe/views/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'create_recipe.dart';
 import 'home.dart';
 import 'my_recipe_page.dart';
 
@@ -21,7 +23,11 @@ class _MyHomePageState extends State<MyHomePage> {
     Widget page;
     switch (selectedIndex) {
       case 0:
-        page = const MyRecipePage();
+        if (Provider.of<ApplicationState>(context, listen: false).loggedIn) {
+          page = const MyRecipePage();
+        } else {
+          page = const LoginRequiredPage();
+        }
         break;
       case 1:
         page = const HomePage();
@@ -29,8 +35,6 @@ class _MyHomePageState extends State<MyHomePage> {
       case 2:
         page = const ProfilePage();
         break;
-      case 3:
-        page = const CreateRecipePage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
