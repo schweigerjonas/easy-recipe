@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'creation_model.dart';
-import 'dynamic_widget.dart';
+import 'dynamic_ingredient_widget.dart';
 
 class SetRecipeInformation extends StatefulWidget {
   const SetRecipeInformation({super.key});
@@ -16,7 +16,7 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
   final portionController = TextEditingController();
   final timeController = TextEditingController();
 
-  List<DynamicWidget> dynamicTextFields = [];
+  List<DynamicIngredientWidget> dynamicTextFields = [];
   List<String> ingredientsData = [];
 
   @override

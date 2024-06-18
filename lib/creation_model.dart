@@ -3,6 +3,19 @@ import 'package:flutter/material.dart';
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
 
+  String title = "";
+  String image = "";
+  int cookingTime = 0;
+  int id = 0;
+  int servings = 0;
+  bool isVegan = false;
+  bool isVegetarian = false;
+  bool isDairyFree = false;
+  bool isGlutenFree = false;
+  String summary = "";
+  double score = 0.0;
+  List<String> ingredients = [];
+  String instructions = "";
 
 
   void setPageIndex(int index) {
@@ -10,42 +23,8 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
-}
-
-class CreatedRecipe {
-  final int id;
-
-  final String title;
-  final String image;
-  final int cookingTime;
-  final int servings;
-
-  final bool isVegetarian;
-  final bool isVegan;
-  final bool isDairyFree;
-  final bool isGlutenFree;
-  final bool isKetogenic;
-
-  final String summary;
-  final List<String> ingredients;
-  final String instructions;
-
-  final double score;
-
-  CreatedRecipe({
-    required this.id,
-    required this.title,
-    required this.image,
-    required this.cookingTime,
-    required this.servings,
-    required this.isVegetarian,
-    required this.isVegan,
-    required this.isDairyFree,
-    required this.isGlutenFree,
-    required this.isKetogenic,
-    required this.summary,
-    required this.ingredients,
-    required this.instructions,
-    required this.score,
-  });
+  void setIngredients(List<String> ingredients) {
+    this.ingredients = ingredients;
+    notifyListeners();
+  }
 }

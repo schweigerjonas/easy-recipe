@@ -14,17 +14,31 @@ enum UnitLabel {
   final String label;
 }
 
-class DynamicWidget extends StatefulWidget {
-  const DynamicWidget({super.key});
-
-  @override
-  State<DynamicWidget> createState() => _DynamicWidgetState();
-}
-
-class _DynamicWidgetState extends State<DynamicWidget> {
+class IngredientWidgetController {
   UnitLabel? selectedUnit = UnitLabel.select;
   final ingredientController = TextEditingController();
   final amountController = TextEditingController();
+
+  String getUnit() {
+    String unit = "";
+    if (selectedUnit != UnitLabel.select) unit = selectedUnit!.label;
+
+    return unit;
+  }
+  String getIngredient() => ingredientController.text;
+  String getAmount() => amountController.text;
+}
+
+class DynamicIngredientWidget extends StatefulWidget {
+  final IngredientWidgetController controller;
+
+  const DynamicIngredientWidget({super.key, required this.controller});
+
+  @override
+  State<DynamicIngredientWidget> createState() => _DynamicIngredientWidgetState();
+}
+
+class _DynamicIngredientWidgetState extends State<DynamicIngredientWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +55,7 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
-                controller: amountController,
+                controller: widget.controller.amountController,
               ),
             ),
             SizedBox(width: size.width / 64),
@@ -49,10 +63,10 @@ class _DynamicWidgetState extends State<DynamicWidget> {
               width: ((size.width / 32) * 7),
               child: DropdownButtonFormField<UnitLabel>(
                 isDense: true,
-                value: selectedUnit,
+                value: widget.controller.selectedUnit,
                 onChanged: (UnitLabel? value) {
                   setState(() {
-                    selectedUnit = value!;
+                    widget.controller.selectedUnit = value;
                   });
                 },
                 items: UnitLabel.values
@@ -71,7 +85,7 @@ class _DynamicWidgetState extends State<DynamicWidget> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
-                controller: ingredientController,
+                controller: widget.controller.ingredientController,
               ),
             ),
           ],

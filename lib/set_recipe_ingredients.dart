@@ -2,21 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'creation_model.dart';
-import 'dynamic_widget.dart';
-
-enum UnitLabel {
-  select(label: '-select-'),
-  milliliter(label: 'ml'),
-  liter(label: 'l'),
-  gram(label: 'g'),
-  kilogram(label: 'kg'),
-  teaspoon(label: 'tsp'),
-  tablespoon(label: 'tbsp');
-
-  const UnitLabel({required this.label});
-
-  final String label;
-}
+import 'dynamic_ingredient_widget.dart';
 
 class SetRecipeIngredients extends StatefulWidget {
   const SetRecipeIngredients({super.key});
@@ -26,19 +12,35 @@ class SetRecipeIngredients extends StatefulWidget {
 }
 
 class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
-  UnitLabel? selectedUnit = UnitLabel.select;
-  List<DynamicWidget> container = [
-    const DynamicWidget(),
-    const DynamicWidget(),
-    const DynamicWidget(),
+  List<String> ingredients = [];
+  List<DynamicIngredientWidget> container = [
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
   ];
+
+  List<String> setIngredients() {
+    int i = 0;
+    List<String> ingredientList = [];
+
+    for(DynamicIngredientWidget element in container) {
+      String ingredient = "${element.controller.getAmount()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
+      if(ingredient.replaceAll(" ", "").isNotEmpty) ingredientList.insert(i, ingredient);
+
+      i = i + 1;
+    }
+
+    print(ingredientList);
+    return ingredientList;
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0, horizontal: ((size.width / 64) * 2)),
+      padding: EdgeInsets.symmetric(
+          vertical: 16.0, horizontal: ((size.width / 64) * 2)),
       child: ListView(
         shrinkWrap: true,
         children: [
@@ -100,8 +102,8 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  setState( () {
-                    container.insert(0, const DynamicWidget());
+                  setState(() {
+                    //container.insert(0, /*const DynamicWidget()*/);
                   });
                 },
                 child: const Text('Add Ingredient'),
@@ -109,8 +111,8 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
               const SizedBox(width: 8.0),
               ElevatedButton(
                 onPressed: () {
-                  if(container.isNotEmpty) {
-                    setState( () {
+                  if (container.isNotEmpty) {
+                    setState(() {
                       container.removeAt(0);
                     });
                   }
@@ -130,12 +132,16 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                 },
                 child: const Text('Back'),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Provider.of<CreationModel>(context, listen: false)
-                      .setPageIndex(2);
-                },
-                child: const Text('Next Step'),
+              Consumer<CreationModel>(
+                builder: (context, creation, _) => ElevatedButton(
+                  onPressed: () {
+                    creation.setPageIndex(2);
+                    ingredients = setIngredients();
+                    print(ingredients);
+                    creation.setIngredients(ingredients);
+                  },
+                  child: const Text('Next Step'),
+                ),
               ),
             ],
           ),
