@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'creation_model.dart';
-import 'dynamic_ingredient_widget.dart';
+import 'widgets/dynamic_ingredient_widget.dart';
 
 class SetRecipeInformation extends StatefulWidget {
   const SetRecipeInformation({super.key});

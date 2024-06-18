@@ -17,7 +17,7 @@ enum UnitLabel {
 class IngredientWidgetController {
   UnitLabel? selectedUnit = UnitLabel.select;
   final ingredientController = TextEditingController();
-  final amountController = TextEditingController();
+  final quantityController = TextEditingController();
 
   String getUnit() {
     String unit = "";
@@ -26,7 +26,7 @@ class IngredientWidgetController {
     return unit;
   }
   String getIngredient() => ingredientController.text;
-  String getAmount() => amountController.text;
+  String getQuantity() => quantityController.text;
 }
 
 class DynamicIngredientWidget extends StatefulWidget {
@@ -55,7 +55,7 @@ class _DynamicIngredientWidgetState extends State<DynamicIngredientWidget> {
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
-                controller: widget.controller.amountController,
+                controller: widget.controller.quantityController,
               ),
             ),
             SizedBox(width: size.width / 64),

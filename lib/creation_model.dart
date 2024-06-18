@@ -27,4 +27,8 @@ class CreationModel extends ChangeNotifier {
     this.ingredients = ingredients;
     notifyListeners();
   }
+
+  List<String> getIngredients() {
+    return ingredients;
+  }
 }

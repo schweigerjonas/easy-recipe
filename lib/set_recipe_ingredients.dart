@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'creation_model.dart';
-import 'dynamic_ingredient_widget.dart';
+import 'widgets/dynamic_ingredient_widget.dart';
 
 class SetRecipeIngredients extends StatefulWidget {
   const SetRecipeIngredients({super.key});
@@ -24,13 +24,12 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     List<String> ingredientList = [];
 
     for(DynamicIngredientWidget element in container) {
-      String ingredient = "${element.controller.getAmount()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
+      String ingredient = "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
       if(ingredient.replaceAll(" ", "").isNotEmpty) ingredientList.insert(i, ingredient);
 
       i = i + 1;
     }
 
-    print(ingredientList);
     return ingredientList;
   }
 
@@ -41,8 +40,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     return Padding(
       padding: EdgeInsets.symmetric(
           vertical: 16.0, horizontal: ((size.width / 64) * 2)),
-      child: ListView(
-        shrinkWrap: true,
+      child: Column(
         children: [
           const Text(
             'Ingredients',
@@ -51,59 +49,13 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
               fontSize: 20.0,
             ),
           ),
-          const SizedBox(height: 32.0),
-          Row(
-            children: [
-              SizedBox(
-                width: ((size.width / 32) * 5),
-                child: const Text(
-                  'Amount',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              SizedBox(width: size.width / 64),
-              SizedBox(
-                width: ((size.width / 32) * 7),
-                child: const Text(
-                  'Unit',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ),
-              SizedBox(width: size.width / 64),
-              SizedBox(
-                width: ((size.width / 8) * 4),
-                child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Ingredient',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16.0,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16.0),
-          Column(
-            children: container,
-          ),
-          const SizedBox(height: 16.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    //container.insert(0, /*const DynamicWidget()*/);
+                    container.insert(0, DynamicIngredientWidget(controller: IngredientWidgetController()));
                   });
                 },
                 child: const Text('Add Ingredient'),
@@ -121,7 +73,61 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
               )
             ],
           ),
-          const SizedBox(height: 24.0),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: ((size.width / 32) * 5),
+                      child: const Text(
+                        'Quantity',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: size.width / 64),
+                    SizedBox(
+                      width: ((size.width / 32) * 7),
+                      child: const Text(
+                        'Unit',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: size.width / 64),
+                    SizedBox(
+                      width: ((size.width / 8) * 4),
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Ingredient',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Column(
+                  children: container,
+                ),
+                const SizedBox(height: 8.0),
+
+                const SizedBox(height: 24.0),
+              ],
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -137,7 +143,6 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                   onPressed: () {
                     creation.setPageIndex(2);
                     ingredients = setIngredients();
-                    print(ingredients);
                     creation.setIngredients(ingredients);
                   },
                   child: const Text('Next Step'),
