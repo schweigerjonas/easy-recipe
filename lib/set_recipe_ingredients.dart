@@ -23,9 +23,11 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     int i = 0;
     List<String> ingredientList = [];
 
-    for(DynamicIngredientWidget element in container) {
-      String ingredient = "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
-      if(ingredient.replaceAll(" ", "").isNotEmpty) ingredientList.insert(i, ingredient);
+    for (DynamicIngredientWidget element in container) {
+      String ingredient =
+          "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
+      if (ingredient.replaceAll(" ", "").isNotEmpty)
+        ingredientList.insert(i, ingredient);
 
       i = i + 1;
     }
@@ -55,7 +57,10 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    container.insert(0, DynamicIngredientWidget(controller: IngredientWidgetController()));
+                    container.insert(
+                        0,
+                        DynamicIngredientWidget(
+                            controller: IngredientWidgetController()));
                   });
                 },
                 child: const Text('Add Ingredient'),
@@ -123,13 +128,12 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                   children: container,
                 ),
                 const SizedBox(height: 8.0),
-
                 const SizedBox(height: 24.0),
               ],
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
                 onPressed: () {
@@ -140,10 +144,13 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
               ),
               Consumer<CreationModel>(
                 builder: (context, creation, _) => ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
                   onPressed: () {
-                    creation.setPageIndex(2);
                     ingredients = setIngredients();
                     creation.setIngredients(ingredients);
+                    creation.setPageIndex(2);
                   },
                   child: const Text('Next Step'),
                 ),

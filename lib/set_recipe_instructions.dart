@@ -21,11 +21,16 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String setInstructions() {
-    String instructionText = "";
+    final buffer = StringBuffer();
 
-    // TODO
+    buffer.write("<p><ol>");
+    for(DynamicInstructionWidget element in container) {
+      String inst = element.controller.instructionController.text;
+      if (inst.replaceAll(" ", "") != "") buffer.write("<li>$inst</li>");
+    }
+    buffer.write("</ol></p>");
 
-    return instructionText;
+    return buffer.toString();
   }
 
   @override
@@ -56,10 +61,15 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
             Expanded(
               child: Consumer<CreationModel>(builder: (context, creation, _) {
                 return ListView(
-                  padding: EdgeInsets.zero,
-                  children: const [
-                    // TODO
-                  ],
+                  padding: const EdgeInsets.all(8.0),
+                  children: List.generate(
+                    creation.getIngredients().length,
+                    (index) => Text(creation.getIngredients().elementAt(index),
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                  ),
                 );
               }),
             ),
@@ -100,7 +110,8 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            container.insert(0,
+                            container.insert(
+                                0,
                                 DynamicInstructionWidget(
                                     controller: InstructionWidgetController()));
                           });
@@ -129,7 +140,7 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   onPressed: () {
@@ -138,12 +149,18 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                   },
                   child: const Text('Back'),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Provider.of<CreationModel>(context, listen: false)
-                        .setPageIndex(3);
-                  },
-                  child: const Text('Next Step'),
+                Consumer<CreationModel>(
+                  builder: (context, creation, _) => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                    onPressed: () {
+                      instructions = setInstructions();
+                      creation.setInstructions(instructions);
+                      creation.setPageIndex(3);
+                    },
+                    child: const Text('Next Step'),
+                  ),
                 ),
               ],
             ),

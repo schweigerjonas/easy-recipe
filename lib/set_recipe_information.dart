@@ -103,15 +103,23 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                   ],
                 ),
                 const SizedBox(height: 24.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Provider.of<CreationModel>(context, listen: false)
-                        .setPageIndex(1);
-                  },
-                  child: const Text('Next Step'),
-                )
               ],
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
+                onPressed: () {
+                  Provider.of<CreationModel>(context, listen: false)
+                      .setPageIndex(1);
+                },
+                child: const Text('Next Step'),
+              ),
+            ],
           ),
         ],
       ),
