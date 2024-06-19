@@ -342,9 +342,6 @@ class _HomePageState extends State<HomePage> {
                             context.go("/sign-in");
                           });
                         },
-                        markAsFavoriteLoggedIn: () {
-                          Provider.of<ApplicationState>(context).saveAsFavorite(recipe.id);
-                        },
                         loggedInState: Provider.of<ApplicationState>(context).loggedIn,
                         userId: 1,
                       );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/application_state.dart';
+import '../models/my_recipe_page_model.dart';
 import '../models/recipe_card_model.dart';
 
 class RecipeCard extends StatelessWidget {
@@ -10,7 +11,6 @@ class RecipeCard extends StatelessWidget {
   final String thumbnailUrl;
   final VoidCallback onTap;
   final VoidCallback markAsFavoriteNotLoggedIn;
-  final VoidCallback markAsFavoriteLoggedIn;
   final int id;
   final bool loggedInState;
   final int userId;
@@ -24,7 +24,6 @@ class RecipeCard extends StatelessWidget {
     required this.thumbnailUrl,
     required this.onTap,
     required this.markAsFavoriteNotLoggedIn,
-    required this.markAsFavoriteLoggedIn,
     required this.id,
     required this.loggedInState,
     required this.userId
@@ -45,6 +44,37 @@ class RecipeCard extends StatelessWidget {
           TextButton(
               onPressed: markAsFavoriteNotLoggedIn,
               child: const Text('LOGIN')
+          ),
+        ],
+      ),
+    );
+
+    Future openDeleteDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: const Text('Do you really want to delete this recipe from your favorites?'),
+        actions: [
+          TextButton(
+              onPressed: () async {
+                _isIconChanged.value = false;
+                await Provider.of<ApplicationState>(context, listen: false).deleteRecipeFromFavorites(id);
+                if (context.mounted) {
+                  var recipes = await Provider.of<ApplicationState>(context, listen: false).getSavedRecipes();
+                  if (context.mounted) {
+                    Provider.of<MyRecipePageModel>(context, listen: false).setRecipes(recipes);
+                  }
+                }
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('YES')
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('NO')
           ),
         ],
       ),
@@ -122,9 +152,14 @@ class RecipeCard extends StatelessWidget {
                                 if (_isIconChanged.value == false) {
                                   _isIconChanged.value = true;
                                   await Provider.of<ApplicationState>(context, listen: false).saveAsFavorite(id);
+                                  if (context.mounted) {
+                                    var recipes = await Provider.of<ApplicationState>(context, listen: false).getSavedRecipes();
+                                    if (context.mounted) {
+                                      Provider.of<MyRecipePageModel>(context, listen: false).setRecipes(recipes);
+                                    }
+                                  }
                                 } else {
-                                  _isIconChanged.value = false;
-                                  await Provider.of<ApplicationState>(context, listen: false).deleteRecipeFromFavorites(id);
+                                  openDeleteDialog();
                                 }
                               } else {
                                 openDialog();

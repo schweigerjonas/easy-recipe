@@ -99,21 +99,6 @@ class _MyRecipePageState extends State<MyRecipePage> {
     super.dispose();
   }
 
-  Future<void> getSavedRecipesByName(String name) async {
-    setState(() {
-      _isLoading = true;
-    });
-    //TODO
-    if (mounted) {
-      setState(() {
-        //TODO Provider.of<MyRecipePageModel>(context, listen: false).setRecipes(recipes);
-      });
-    }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
   Future<void> searchSavedRecipesByFilter() async {
     int maxTime = 0;
     String timeQuery = '';
@@ -252,26 +237,14 @@ class _MyRecipePageState extends State<MyRecipePage> {
               padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 12.0),
               child: Row(
                 children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      style: const TextStyle(
+                  const Expanded(
+                    child: Text(
+                      'Your Recipes',
+                      style: TextStyle(
+                        fontSize: 20,
                         height: 1,
-                        color: Color(0xFF8D8D8D),
+                        color: Colors.white,
                       ),
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.search),
-                        hintText: 'Search',
-                        hintStyle: TextStyle(
-                          color: Color(0xFF8D8D8D),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xFFFFFFFF),
-                        border: OutlineInputBorder(),
-                      ),
-                      controller: searchController,
-                      onSubmitted: (String text) {
-                        getSavedRecipesByName(searchController.text);
-                      },
                     ),
                   ),
                   const SizedBox(width: 8.0),
@@ -306,16 +279,6 @@ class _MyRecipePageState extends State<MyRecipePage> {
                 },
               ),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Your Recipes',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-            ),
             Expanded(
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
@@ -343,9 +306,6 @@ class _MyRecipePageState extends State<MyRecipePage> {
                             Navigator.of(context).pop();
                             context.go("/sign-in");
                           });
-                        },
-                        markAsFavoriteLoggedIn: () {
-                          Provider.of<ApplicationState>(context).saveAsFavorite(recipe.id);
                         },
                         loggedInState: Provider.of<ApplicationState>(context).loggedIn,
                         userId: 1,

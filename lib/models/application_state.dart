@@ -86,7 +86,8 @@ class ApplicationState extends ChangeNotifier {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('recipes')
-        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
+        .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+        .orderBy('title', descending: false).get();
 
     List<Recipe> recipes = [];
     for (final document in snapshot.docs) {
