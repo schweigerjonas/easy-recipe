@@ -1,8 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:provider/provider.dart';
 
 import 'creation_model.dart';
-import 'dynamic_widget.dart';
+
+class Category {
+  final int id;
+  final String name;
+  bool isSet;
+
+  Category({
+    required this.id,
+    required this.name,
+    required this.isSet,
+  });
+
+  @override
+  toString() {
+    return "id: $id, name: $name, isSet: $isSet";
+  }
+}
 
 class SetRecipeInformation extends StatefulWidget {
   const SetRecipeInformation({super.key});
@@ -12,85 +32,208 @@ class SetRecipeInformation extends StatefulWidget {
 }
 
 class _SetRecipeInformationState extends State<SetRecipeInformation> {
+  final _formKeyName = GlobalKey<FormState>();
+  final _formKeyServings = GlobalKey<FormState>();
+  final _formKeyTime = GlobalKey<FormState>();
   final recipeNameController = TextEditingController();
-  final portionController = TextEditingController();
+  final servingsController = TextEditingController();
   final timeController = TextEditingController();
 
-  List<DynamicWidget> dynamicTextFields = [];
-  List<String> ingredientsData = [];
+  static final List<Category> _categories = [
+    Category(id: 1, name: "vegetarian", isSet: false),
+    Category(id: 2, name: "vegan", isSet: false),
+    Category(id: 3, name: "dairy-free", isSet: false),
+    Category(id: 4, name: "gluten-free", isSet: false),
+  ];
+  final _items = _categories
+      .map((category) => MultiSelectItem<Category>(category, category.name))
+      .toList();
+  List<Category?> _selectedCategories = [];
+
+  @override
+  void initState() {
+    _selectedCategories = [];
+    super.initState();
+  }
+
+  List<Category?> setCategoryValues() {
+    for (var i=0; i<_selectedCategories.length; i++) {
+      for (var j=0; j<_categories.length; j++) {
+        if (_categories.elementAt(j).id == _selectedCategories.elementAt(i)?.id) {
+          _categories.elementAt(j).isSet = true;
+          break;
+        }
+      }
+    }
+
+    return _categories;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
         children: <Widget>[
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            child: Text('Create Recipe',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 20.0,
-              ),
+          const Text(
+            'Create Recipe',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 20.0,
             ),
           ),
+          const SizedBox(height: 32.0),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 0.0, 8.0, 16.0),
-              child: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  const Text('Recipe Name'),
-                  TextField(
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                const Text(
+                  'Recipe Name',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+                Form(
+                  key: _formKeyName,
+                  child: TextFormField(
                     decoration: const InputDecoration(
-                      labelText: 'Recipe Name',
+                      hintText: 'e.g. Pork Carnitas Tacos',
                     ),
                     controller: recipeNameController,
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'This field is required';
+                      } else {
+                        return null;
+                      }
+                    },
                   ),
-                  const SizedBox(height: 16.0),
-                  Row(
-                    children: <Widget>[
-                      const Text('The recipe is designed for '),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextField(
+                ),
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Portions',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    const Text('The recipe is designed for '),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Form(
+                          key: _formKeyServings,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                              labelText: 'Portions',
+                              hintText: 'e.g. 4',
                             ),
-                            controller: portionController,
+                            controller: servingsController,
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'This field is required';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
                         ),
                       ),
-                      const Text(' persons/portions.'),
-                    ],
+                    ),
+                    const Text(' servings/persons.'),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Cooking Time',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
                   ),
-                  Row(
-                    children: [
-                      const Text('It takes '),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: TextField(
+                ),
+                Row(
+                  children: [
+                    const Text('It takes '),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Form(
+                          key: _formKeyTime,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
                             decoration: const InputDecoration(
-                              hintText: 'eg. 25',
+                              hintText: 'e.g. 25',
                             ),
                             controller: timeController,
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return '';
+                              } else {
+                                return null;
+                              }
+                            },
                           ),
                         ),
                       ),
-                      const Text('minutes to cook the whole recipe.'),
-                    ],
+                    ),
+                    const Text('min. to cook the whole recipe.'),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                const Text(
+                  'Categories',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.0,
                   ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      Provider.of<CreationModel>(context, listen: false).setPageIndex(1);
+                ),
+                MultiSelectBottomSheetField<Category?>(
+                  initialChildSize: 0.4,
+                  listType: MultiSelectListType.CHIP,
+                  buttonText: const Text('Select'),
+                  title: const Text('Categories'),
+                  items: _items,
+                  onConfirm: (values) {
+                    setState(() {
+                      _selectedCategories = values;
+                    });
+                  },
+                  chipDisplay: MultiSelectChipDisplay(
+                    onTap: (value) {
+                      setState(() {
+                        _selectedCategories.remove(value);
+                      });
                     },
-                    child: const Text('Next Step'),
-                  )
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Consumer<CreationModel>(
+                builder: (context, creation, _) => ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                  onPressed: () {
+                    if (_formKeyName.currentState!.validate() && _formKeyServings.currentState!.validate() && _formKeyTime.currentState!.validate()) {
+                      creation.setRecipeTitle(recipeNameController.text);
+                      creation.setServings(int.parse(servingsController.text));
+                      creation.setTimeToCook(int.parse(timeController.text));
+                      var categories = setCategoryValues();
+                      creation.setCategories(categories);
+                      creation.setPageIndex(1);
+                    }
+                  },
+                  child: const Text('Next Step'),
+                ),
+              ),
+            ],
           ),
         ],
       ),

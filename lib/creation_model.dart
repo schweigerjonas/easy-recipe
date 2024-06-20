@@ -1,8 +1,23 @@
+import 'package:easy_recipe/models/detailed_recipe.dart';
+import 'package:easy_recipe/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
 
+  String title = "";
+  String image = "";
+  int cookingTime = 0;
+  int id = 0;
+  int servings = 0;
+  bool isVegetarian = false;
+  bool isVegan = false;
+  bool isDairyFree = false;
+  bool isGlutenFree = false;
+  String summary = "";
+  double score = 0.0;
+  List<String> ingredients = [];
+  String instructions = "";
 
 
   void setPageIndex(int index) {
@@ -10,42 +25,70 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
-}
+  void setRecipeTitle(String title) {
+    this.title = title;
+    notifyListeners();
+  }
 
-class CreatedRecipe {
-  final int id;
+  void setServings(int servings) {
+    this.servings = servings;
+    notifyListeners();
+  }
 
-  final String title;
-  final String image;
-  final int cookingTime;
-  final int servings;
+  void setTimeToCook(int time) {
+    cookingTime = time;
+    notifyListeners();
+  }
 
-  final bool isVegetarian;
-  final bool isVegan;
-  final bool isDairyFree;
-  final bool isGlutenFree;
-  final bool isKetogenic;
+  void setCategories(List<Category?> selectedCategories) {
+    for (var i=0; i<selectedCategories.length; i++) {
+      switch (selectedCategories.elementAt(i)?.id) {
+        case 1:
+          isVegetarian = selectedCategories.elementAt(i)!.isSet;
+          break;
+        case 2:
+          isVegan = selectedCategories.elementAt(i)!.isSet;
+          break;
+        case 3:
+          isDairyFree = selectedCategories.elementAt(i)!.isSet;
+          break;
+        case 4:
+          isGlutenFree = selectedCategories.elementAt(i)!.isSet;
+          break;
+      }
+    }
+    notifyListeners();
+  }
 
-  final String summary;
-  final List<String> ingredients;
-  final String instructions;
+  void setIngredients(List<String> ingredients) {
+    this.ingredients = ingredients;
+    notifyListeners();
+  }
 
-  final double score;
+  List<String> getIngredients() {
+    return ingredients;
+  }
 
-  CreatedRecipe({
-    required this.id,
-    required this.title,
-    required this.image,
-    required this.cookingTime,
-    required this.servings,
-    required this.isVegetarian,
-    required this.isVegan,
-    required this.isDairyFree,
-    required this.isGlutenFree,
-    required this.isKetogenic,
-    required this.summary,
-    required this.ingredients,
-    required this.instructions,
-    required this.score,
-  });
+  void setInstructions(String instructions) {
+    this.instructions = instructions;
+    notifyListeners();
+  }
+
+  DetailedRecipe createRecipe() {
+
+    return DetailedRecipe(
+        title: title,
+        image: image,
+        cookingTime: cookingTime,
+        id: id,
+        servings: servings,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        isDairyFree: isDairyFree,
+        isGlutenFree: isGlutenFree,
+        summary: summary,
+        score: score,
+        ingredients: ingredients,
+        instructions: instructions);
+  }
 }

@@ -1,5 +1,6 @@
 import 'package:easy_recipe/set_recipe_information.dart';
 import 'package:easy_recipe/set_recipe_ingredients.dart';
+import 'package:easy_recipe/set_recipe_instructions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
   final screens = [
     const SetRecipeInformation(),
     const SetRecipeIngredients(),
+    const SetRecipeInstructions(),
   ];
 
   @override
