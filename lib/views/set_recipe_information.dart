@@ -5,7 +5,7 @@ import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:multi_select_flutter/util/multi_select_list_type.dart';
 import 'package:provider/provider.dart';
 
-import 'creation_model.dart';
+import '../models/creation_model.dart';
 
 class Category {
   final int id;

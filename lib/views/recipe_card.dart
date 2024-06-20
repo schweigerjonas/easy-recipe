@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'application_state.dart';
+import '../models/application_state.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;

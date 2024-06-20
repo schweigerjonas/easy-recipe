@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider, PhoneA
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'firebase_options.dart';
-import 'models/recipe.api.dart';
+import 'recipe.api.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
