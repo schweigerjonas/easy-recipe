@@ -134,7 +134,7 @@ class ApplicationState extends ChangeNotifier {
   Future<List<Recipe>> getSavedRecipesByFilter(int maxTime, List<String> diets) async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-    bool vegetarian = false;
+    /*bool vegetarian = false;
     bool vegan = false;
     bool glutenFree = false;
     bool dairyFree = false;
@@ -468,7 +468,32 @@ class ApplicationState extends ChangeNotifier {
           }
         }
       }
+    }*/
+
+    // Basisabfrage
+    Query query = FirebaseFirestore.instance.collection('recipes').where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid);
+
+    // Filter nach Kochzeit
+    if (maxTime > 0) {
+      query = query.where('cookingTime', isLessThanOrEqualTo: maxTime);
     }
+
+    // Diätfilter hinzufügen
+    if (diets.contains('vegetarian')) {
+      query = query.where('isVegetarian', isEqualTo: true);
+    }
+    if (diets.contains('vegan')) {
+      query = query.where('isVegan', isEqualTo: true);
+    }
+    if (diets.contains('gluten-free')) {
+      query = query.where('isGlutenFree', isEqualTo: true);
+    }
+    if (diets.contains('dairy-free')) {
+      query = query.where('isDairyFree', isEqualTo: true);
+    }
+
+    // Abfrage ausführen und Ergebnisse verarbeiten
+    QuerySnapshot snapshot = await query.orderBy('title', descending: false).get();
 
     List<Recipe> recipes = [];
     for (final document in snapshot.docs) {
