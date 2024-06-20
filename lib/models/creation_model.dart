@@ -73,6 +73,11 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSummary(String summary) {
+    this.summary = summary;
+    notifyListeners();
+  }
+
   DetailedRecipe createRecipe() {
 
     return DetailedRecipe(
