@@ -1,5 +1,5 @@
 import 'package:easy_recipe/models/detailed_recipe.dart';
-import 'package:easy_recipe/set_recipe_information.dart';
+import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
 class CreationModel extends ChangeNotifier {

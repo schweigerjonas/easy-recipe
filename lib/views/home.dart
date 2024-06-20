@@ -1,16 +1,16 @@
-import 'package:easy_recipe/application_state.dart';
+import 'package:easy_recipe/models/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 import 'package:easy_recipe/models/recipe.dart';
-import 'package:easy_recipe/recipe_card.dart';
+import 'package:easy_recipe/views/recipe_card.dart';
 import 'package:provider/provider.dart';
 
 import 'create_recipe.dart';
-import 'creation_model.dart';
-import 'filter_option.dart';
+import '../models/creation_model.dart';
+import '../models/filter_option.dart';
 import 'recipe_detail_page.dart';
 
 class HomePage extends StatefulWidget {
