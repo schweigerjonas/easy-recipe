@@ -2,20 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/creation_model.dart';
-
-enum UnitLabel {
-  select('-select a unit-'),
-  milliliter('ml'),
-  liter('l'),
-  gram('g'),
-  kilogram('kg'),
-  teaspoon('tsp'),
-  tablespoon('tbsp');
-
-  const UnitLabel(this.label);
-
-  final String label;
-}
+import 'dynamic_ingredient_widget.dart';
 
 class SetRecipeIngredients extends StatefulWidget {
   const SetRecipeIngredients({super.key});
@@ -25,35 +12,154 @@ class SetRecipeIngredients extends StatefulWidget {
 }
 
 class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
-  UnitLabel? selectedUnit;
+  List<String> ingredients = [];
+  List<DynamicIngredientWidget> container = [
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
+    DynamicIngredientWidget(controller: IngredientWidgetController()),
+  ];
+
+  List<String> setIngredients() {
+    int i = 0;
+    List<String> ingredientList = [];
+
+    for (DynamicIngredientWidget element in container) {
+      String ingredient =
+          "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
+      if (ingredient.replaceAll(" ", "").isNotEmpty) {
+        ingredientList.insert(i, ingredient);
+      }
+
+      i = i + 1;
+    }
+
+    return ingredientList;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const Text('Test'),
-        DropdownMenu<UnitLabel>(
-          initialSelection: UnitLabel.select,
-          onSelected: (UnitLabel? unit) {
-            setState(() {
-              selectedUnit = unit;
-            });
-          },
-          dropdownMenuEntries: UnitLabel.values
-              .map<DropdownMenuEntry<UnitLabel>>((UnitLabel unit) {
-            return DropdownMenuEntry<UnitLabel>(
-              value: unit,
-              label: unit.label,
-            );
-          }).toList(),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Provider.of<CreationModel>(context, listen: false).setPageIndex(0);
-          },
-          child: const Text('Back'),
-        ),
-      ],
+    Size size = MediaQuery.of(context).size;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: 16.0, horizontal: ((size.width / 64) * 2)),
+      child: Column(
+        children: [
+          const Text(
+            'Ingredients',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    container.insert(
+                        0,
+                        DynamicIngredientWidget(
+                            controller: IngredientWidgetController()));
+                  });
+                },
+                child: const Text('Add Ingredient'),
+              ),
+              const SizedBox(width: 8.0),
+              ElevatedButton(
+                onPressed: () {
+                  if (container.isNotEmpty) {
+                    setState(() {
+                      container.removeAt(0);
+                    });
+                  }
+                },
+                child: const Icon(Icons.delete),
+              )
+            ],
+          ),
+          Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                const SizedBox(height: 16.0),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: ((size.width / 32) * 5),
+                      child: const Text(
+                        'Quantity',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: size.width / 64),
+                    SizedBox(
+                      width: ((size.width / 32) * 7),
+                      child: const Text(
+                        'Unit',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: size.width / 64),
+                    SizedBox(
+                      width: ((size.width / 8) * 4),
+                      child: const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Ingredient',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.0,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+                Column(
+                  children: container,
+                ),
+                const SizedBox(height: 8.0),
+                const SizedBox(height: 24.0),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Provider.of<CreationModel>(context, listen: false)
+                      .setPageIndex(0);
+                },
+                child: const Text('Back'),
+              ),
+              Consumer<CreationModel>(
+                builder: (context, creation, _) => ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                  ),
+                  onPressed: () {
+                    ingredients = setIngredients();
+                    creation.setIngredients(ingredients);
+                    creation.setPageIndex(2);
+                  },
+                  child: const Text('Next Step'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

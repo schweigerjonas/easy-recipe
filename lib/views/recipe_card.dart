@@ -34,7 +34,6 @@ class RecipeCard extends StatelessWidget {
     if (Provider.of<RecipeCardModel>(context, listen: false).savedRecipes.contains(id)) {
       _isIconChanged.value = true;
     }
-
     Future openDialog() => showDialog(
       context: context,
       builder: (context) => AlertDialog(

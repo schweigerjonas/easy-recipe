@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../views/my_home_page.dart';
+import '../views/app.dart';
 
 final _router = GoRouter(
   routes: [

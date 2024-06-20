@@ -1,11 +1,15 @@
 import 'package:easy_recipe/models/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
+
 import 'package:easy_recipe/models/home_model.dart';
 import 'package:easy_recipe/models/recipe_card_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
+
+import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/views/recipe_card.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +59,7 @@ class _HomePageState extends State<HomePage> {
   final _items = _filterOptions
       .map((filterOption) => MultiSelectItem<FilterOption>(filterOption, filterOption.name))
       .toList();
-  
+
   @override
   void initState() {
     super.initState();
