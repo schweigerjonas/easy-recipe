@@ -19,7 +19,6 @@ class CreationModel extends ChangeNotifier {
   List<String> ingredients = [];
   String instructions = "";
 
-
   void setPageIndex(int index) {
     currentPageIndex = index;
     notifyListeners();

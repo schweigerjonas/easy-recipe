@@ -1,9 +1,14 @@
 import 'package:easy_recipe/models/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
+
+import 'package:easy_recipe/models/home_model.dart';
+import 'package:easy_recipe/models/recipe_card_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
+
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/views/recipe_card.dart';
 import 'package:provider/provider.dart';
@@ -22,7 +27,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  late List<Recipe> _recipes = [];
   int randomRecipeCount = 5;
   bool _isLoading = true;
   final searchController = TextEditingController();
@@ -56,13 +60,26 @@ class _HomePageState extends State<HomePage> {
       .map((filterOption) => MultiSelectItem<FilterOption>(filterOption, filterOption.name))
       .toList();
 
-  List<FilterOption> _selectedFilterOptions = [];
-
   @override
   void initState() {
-    _selectedFilterOptions = [];
     super.initState();
-    getRecipes();
+    if (Provider.of<HomePageModel>(context, listen: false).getRecipes.isEmpty) {
+      getRecipes();
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+    initSavedRecipes();
+  }
+
+  Future<void> initSavedRecipes() async {
+    List<int> savedRecipes = await Provider.of<ApplicationState>(context, listen: false).getRecipeIDs();
+    if (mounted) {
+      setState(() {
+        Provider.of<RecipeCardModel>(context, listen: false).setSavedRecipes(savedRecipes);
+      });
+    }
   }
 
   @override
@@ -76,14 +93,24 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isLoading = true;
     });
-    _recipes = await RecipeApi().getRecipeByName(name);
+    final recipes = await RecipeApi().getRecipeByName(name);
+    if (mounted) {
+      setState(() {
+        Provider.of<HomePageModel>(context, listen: false).setRecipes(recipes);
+      });
+    }
     setState(() {
       _isLoading = false;
     });
   }
 
   Future<void> getRecipes() async {
-    _recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
+    final recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
+    if (mounted) {
+      setState(() {
+        Provider.of<HomePageModel>(context, listen: false).setRecipes(recipes);
+      });
+    }
     setState(() {
       _isLoading = false;
     });
@@ -97,7 +124,8 @@ class _HomePageState extends State<HomePage> {
     List<String> types = [];
     String typeQuery = '';
     String query = '';
-    for (FilterOption f in _selectedFilterOptions) {
+    var selectedFilterOptions = Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions;
+    for (FilterOption f in selectedFilterOptions) {
       if (f.id == 0) {
         maxTime = 30;
       }
@@ -160,7 +188,12 @@ class _HomePageState extends State<HomePage> {
     if (query == '') {
       await getRecipes();
     } else {
-      _recipes = await RecipeApi().searchRecipes(query);
+      final recipes = await RecipeApi().searchRecipes(query);
+      if (mounted) {
+        setState(() {
+          Provider.of<HomePageModel>(context, listen: false).setRecipes(recipes);
+        });
+      }
     }
     setState(() {
       _isLoading = false;
@@ -189,10 +222,11 @@ class _HomePageState extends State<HomePage> {
           ),
           listType: MultiSelectListType.CHIP,
           items: _items,
-          initialValue: _selectedFilterOptions,
+          initialValue: Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions,
           onConfirm: (values) {
             setState(() {
-              _selectedFilterOptions = values;
+              //_selectedFilterOptions = values;
+              Provider.of<HomePageModel>(context, listen: false).setSelectedFilterOptions(values);
               searchRecipesByFilter();
             });
           },
@@ -262,11 +296,13 @@ class _HomePageState extends State<HomePage> {
             Container(
               padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
               child: MultiSelectChipDisplay(
-                items: _selectedFilterOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
+                items: Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions.map((e) => MultiSelectItem(e, e.name)).toList(),
                 scroll: true,
                 onTap: (value) {
                   setState(() {
-                    _selectedFilterOptions.remove(value);
+                    var selectedFilterOptions = Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions;
+                    selectedFilterOptions.remove(value);
+                    Provider.of<HomePageModel>(context, listen: false).setSelectedFilterOptions(selectedFilterOptions);
                     searchRecipesByFilter();
                   });
                 },
@@ -286,9 +322,9 @@ class _HomePageState extends State<HomePage> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView.builder(
-                    itemCount: _recipes.length,
+                    itemCount: Provider.of<HomePageModel>(context).getRecipes.length,
                     itemBuilder: (context, index) {
-                      final recipe = _recipes[index];
+                      final recipe = Provider.of<HomePageModel>(context).getRecipes[index];
 
                       // ensures special characters in the title are displayed properly
                       String decodedTitle = RecipeApi().decodeSpecialCharacters(recipe.title);
@@ -309,9 +345,6 @@ class _HomePageState extends State<HomePage> {
                             Navigator.of(context).pop();
                             context.go("/sign-in");
                           });
-                        },
-                        markAsFavoriteLoggedIn: () {
-                          Provider.of<ApplicationState>(context).saveAsFavorite(recipe.id);
                         },
                         loggedInState: Provider.of<ApplicationState>(context).loggedIn,
                         userId: 1,
