@@ -26,8 +26,9 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     for (DynamicIngredientWidget element in container) {
       String ingredient =
           "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
-      if (ingredient.replaceAll(" ", "").isNotEmpty)
+      if (ingredient.replaceAll(" ", "").isNotEmpty) {
         ingredientList.insert(i, ingredient);
+      }
 
       i = i + 1;
     }
