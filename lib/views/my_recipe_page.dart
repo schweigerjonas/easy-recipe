@@ -40,15 +40,6 @@ class _MyRecipePageState extends State<MyRecipePage> {
     FilterOption(id: 4, name: 'vegan'),
     FilterOption(id: 5, name: 'dairy-free'),
     FilterOption(id: 6, name: 'gluten-free'),
-    FilterOption(id: 7, name: 'ketogenic'),
-
-    FilterOption(id: 8, name: 'breakfast'),
-    FilterOption(id: 9, name: 'lunch'),
-    FilterOption(id: 10, name: 'dinner'),
-    FilterOption(id: 11, name: 'appetizer'),
-    FilterOption(id: 12, name: 'main dish'),
-    FilterOption(id: 13, name: 'side dish'),
-    FilterOption(id: 14, name: 'snack'),
   ];
 
   final _items = _filterOptions
@@ -101,12 +92,8 @@ class _MyRecipePageState extends State<MyRecipePage> {
 
   Future<void> searchSavedRecipesByFilter() async {
     int maxTime = 0;
-    String timeQuery = '';
     List<String> diets = [];
-    String dietQuery = '';
-    List<String> types = [];
-    String typeQuery = '';
-    String query = '';
+
     var selectedFilterOptions = Provider.of<MyRecipePageModel>(context, listen: false).getSelectedFilerOptions;
     for (FilterOption f in selectedFilterOptions) {
       if (f.id == 0) {
@@ -119,62 +106,21 @@ class _MyRecipePageState extends State<MyRecipePage> {
         maxTime = 60;
       }
 
-      if (f.id >= 3 && f.id <= 7) {
+      if (f.id >= 3 && f.id <= 6) {
         diets.add(f.name);
       }
+    }
 
-      if (f.id >= 8 && f.id <= 14) {
-        types.add(f.name);
-      }
-    }
-    if (maxTime != 0) {
-      timeQuery = 'maxReadyTime=${maxTime.toString()}';
-    }
-    if (diets.isNotEmpty) {
-      dietQuery = 'diet=';
-      for (var i=0; i<diets.length; i++) {
-        if (i != 0) {
-          dietQuery += '&';
-        }
-        dietQuery += diets[i];
-      }
-    }
-    if (types.isNotEmpty) {
-      typeQuery = 'type=';
-      for (var i=0; i<types.length; i++) {
-        if (i != 0) {
-          typeQuery += '&';
-        }
-        typeQuery += types[i];
-      }
-    }
-    if (timeQuery != '') {
-      query = timeQuery;
-    }
-    if (dietQuery != '') {
-      if (query == '') {
-        query = dietQuery;
-      } else {
-        query += '&$dietQuery';
-      }
-    }
-    if (typeQuery != '') {
-      if (query == '') {
-        query = typeQuery;
-      } else {
-        query += '&$typeQuery';
-      }
-    }
     setState(() {
       _isLoading = true;
     });
-    if (query == '') {
+    if (maxTime == 0 && diets.isEmpty) {
       await getSavedRecipes();
     } else {
-      //TODO
+      final recipes = await Provider.of<ApplicationState>(context, listen: false).getSavedRecipesByFilter(maxTime, diets);
       if (mounted) {
         setState(() {
-          //Provider.of<HomePageModel>(context, listen: false).setRecipes(recipes);
+          Provider.of<MyRecipePageModel>(context, listen: false).setRecipes(recipes);
         });
       }
     }
