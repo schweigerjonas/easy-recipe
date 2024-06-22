@@ -5,39 +5,97 @@ import 'package:provider/provider.dart';
 import '../models/application_state.dart';
 import 'authentication.dart';
 
-
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
+  ProfilePageState createState() => ProfilePageState();
+}
+
+class ProfilePageState extends State<ProfilePage> {
+  late bool isLoggedIn;
+
+  void toggleLogin() {
+    setState(() {
+      isLoggedIn = !isLoggedIn;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    isLoggedIn = Provider.of<ApplicationState>(context, listen: false).loggedIn;
+
     return Scaffold(
-      body: Column(
-        children: [
-          const SizedBox(height: 16.0),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            alignment: Alignment.topLeft,
-            child: const Text('Profile',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontWeight: FontWeight.bold,
-                ),
-            ),
-          ),
-          const SizedBox(height: 100.0),
-          Container(
-            alignment: Alignment.center,
-            child: Consumer<ApplicationState>(
-              builder: (context, appState, _) => AuthFunc(
-                loggedIn: appState.loggedIn,
-                signOut: () {
-                  FirebaseAuth.instance.signOut();
-                }),
-            ),
-          ),
-        ],
+      body: Center(
+        child: isLoggedIn ? loggedInView() : loggedOutView(),
       ),
+    );
+  }
+
+  Widget loggedInView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.account_circle,
+          size: 100,
+          color: Colors.grey,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Welcome, User!',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          FirebaseAuth.instance.currentUser?.email as String,
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          alignment: Alignment.center,
+          child: Consumer<ApplicationState>(
+            builder: (context, appState, _) => AuthFunc(
+              loggedIn: appState.loggedIn,
+              signOut: () {
+                FirebaseAuth.instance.signOut();
+              },
+              toggleState: toggleLogin,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget loggedOutView() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.account_circle,
+          size: 100,
+          color: Colors.grey,
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'You are not logged in',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+        Container(
+          alignment: Alignment.center,
+          child: Consumer<ApplicationState>(
+            builder: (context, appState, _) => AuthFunc(
+              loggedIn: appState.loggedIn,
+              signOut: () {
+                FirebaseAuth.instance.signOut();
+              },
+              toggleState: toggleLogin,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
