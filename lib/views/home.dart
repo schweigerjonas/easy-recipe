@@ -3,13 +3,13 @@ import 'package:easy_recipe/models/detailed_recipe.dart';
 
 import 'package:easy_recipe/models/home_model.dart';
 import 'package:easy_recipe/models/recipe_card_model.dart';
+import 'package:easy_recipe/views/favorite_button.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 
-import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/views/recipe_card.dart';
 import 'package:provider/provider.dart';
 
@@ -346,8 +346,6 @@ class _HomePageState extends State<HomePage> {
                             context.go("/sign-in");
                           });
                         },
-                        loggedInState: Provider.of<ApplicationState>(context).loggedIn,
-                        userId: 1,
                       );
                     }
                 )
@@ -371,7 +369,7 @@ class _HomePageState extends State<HomePage> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xffe0e0e0),
-          title: IconButton(
+          leading: IconButton(
             onPressed: () {
               setState(() {
                 currentPageIndex = 1;
@@ -382,6 +380,17 @@ class _HomePageState extends State<HomePage> {
               color: Color(0xFF3D3D3D),
             ),
           ),
+          actions: <Widget>[
+            FavoriteButton(
+              id: _detailedRecipe.id,
+              markAsFavoriteNotLoggedIn: () {
+                setState(() {
+                  Navigator.of(context).pop();
+                  context.go("/sign-in");
+                });
+              },
+            )
+          ],
           automaticallyImplyLeading: false,
         ),
         body: RecipeDetailPage(
@@ -396,7 +405,9 @@ class _HomePageState extends State<HomePage> {
           summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
           score: _detailedRecipe.score,
           ingredients: _detailedRecipe.ingredients,
-          instructions: _detailedRecipe.instructions
+          instructions: _detailedRecipe.instructions,
+          isGlutenFree: _detailedRecipe.isGlutenFree,
+          isDairyFree: _detailedRecipe.isDairyFree,
         ),
       );
     } else if (currentPageIndex == 3) {

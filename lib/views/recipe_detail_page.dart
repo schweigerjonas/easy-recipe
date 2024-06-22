@@ -11,6 +11,8 @@ class RecipeDetailPage extends StatelessWidget {
   final int servings;
   final bool isVegan;
   final bool isVegetarian;
+  final bool isGlutenFree;
+  final bool isDairyFree;
   final String summary;
   final double score;
   final List<String> ingredients;
@@ -26,6 +28,8 @@ class RecipeDetailPage extends StatelessWidget {
     required this.servings,
     required this.isVegan,
     required this.isVegetarian,
+    required this.isGlutenFree,
+    required this.isDairyFree,
     required this.summary,
     required this.score,
     required this.ingredients,
@@ -36,10 +40,19 @@ class RecipeDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     String diet = "not vegetarian";
+    String gluten = "not gluten-free";
+    String dairy = "not dairy-free";
+
     if (isVegan == true) {
       diet = "vegan";
     } else if (isVegetarian) {
       diet = "vegetarian";
+    }
+    if (isGlutenFree) {
+      gluten = "gluten-free";
+    }
+    if (isDairyFree) {
+      dairy = "dairy-free";
     }
     double scoreRounded = ((score*100).roundToDouble()) / 100;
 
@@ -163,6 +176,48 @@ class RecipeDetailPage extends StatelessWidget {
                           const SizedBox(width: 7),
                           Text(
                             diet,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe0e0e0),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            MdiIcons.grain,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            gluten,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe0e0e0),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            MdiIcons.cow,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            dairy,
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],

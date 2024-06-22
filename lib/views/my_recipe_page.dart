@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'create_recipe.dart';
 import '../models/creation_model.dart';
 import '../models/filter_option.dart';
+import 'favorite_button.dart';
 import 'recipe_detail_page.dart';
 
 class MyRecipePage extends StatefulWidget {
@@ -253,8 +254,6 @@ class _MyRecipePageState extends State<MyRecipePage> {
                             context.go("/sign-in");
                           });
                         },
-                        loggedInState: Provider.of<ApplicationState>(context).loggedIn,
-                        userId: 1,
                       );
                     }
                 )
@@ -278,7 +277,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xffe0e0e0),
-          title: IconButton(
+          leading: IconButton(
             onPressed: () {
               setState(() {
                 currentPageIndex = 1;
@@ -289,21 +288,34 @@ class _MyRecipePageState extends State<MyRecipePage> {
               color: Color(0xFF3D3D3D),
             ),
           ),
+          actions: <Widget>[
+            FavoriteButton(
+              id: _detailedRecipe.id,
+              markAsFavoriteNotLoggedIn: () {
+                setState(() {
+                  Navigator.of(context).pop();
+                  context.go("/sign-in");
+                });
+              },
+            )
+          ],
           automaticallyImplyLeading: false,
         ),
         body: RecipeDetailPage(
-            idRecipe: idRecipeClicked,
-            title: RecipeApi().decodeSpecialCharacters(_detailedRecipe.title),
-            cookingTime: _detailedRecipe.cookingTime,
-            id: _detailedRecipe.id,
-            image: _detailedRecipe.image,
-            isVegan: _detailedRecipe.isVegan,
-            isVegetarian: _detailedRecipe.isVegetarian,
-            servings: _detailedRecipe.servings,
-            summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
-            score: _detailedRecipe.score,
-            ingredients: _detailedRecipe.ingredients,
-            instructions: _detailedRecipe.instructions
+          idRecipe: idRecipeClicked,
+          title: RecipeApi().decodeSpecialCharacters(_detailedRecipe.title),
+          cookingTime: _detailedRecipe.cookingTime,
+          id: _detailedRecipe.id,
+          image: _detailedRecipe.image,
+          isVegan: _detailedRecipe.isVegan,
+          isVegetarian: _detailedRecipe.isVegetarian,
+          servings: _detailedRecipe.servings,
+          summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
+          score: _detailedRecipe.score,
+          ingredients: _detailedRecipe.ingredients,
+          instructions: _detailedRecipe.instructions,
+          isGlutenFree: _detailedRecipe.isGlutenFree,
+          isDairyFree: _detailedRecipe.isDairyFree,
         ),
       );
     } else if (currentPageIndex == 3) {
