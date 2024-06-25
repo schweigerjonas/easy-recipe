@@ -83,7 +83,7 @@ class RecipeCard extends StatelessWidget {
                     child: FavoriteButton(
                       id: id,
                       markAsFavoriteNotLoggedIn: () {
-                        markAsFavoriteNotLoggedIn;
+                        markAsFavoriteNotLoggedIn();
                       },
                     ),
                   ),

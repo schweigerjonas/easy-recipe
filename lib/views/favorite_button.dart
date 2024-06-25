@@ -19,8 +19,12 @@ class FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    if (Provider.of<MyRecipePageModel>(context, listen: false).getRecipeIDs.contains(id)) {
-      _isIconChanged.value = true;
+    if (Provider.of<ApplicationState>(context, listen: false).loggedIn) {
+      if (Provider.of<MyRecipePageModel>(context, listen: false).getRecipeIDs.contains(id)) {
+        _isIconChanged.value = true;
+      }
+    } else {
+      _isIconChanged.value = false;
     }
 
     Future openDialog() => showDialog(

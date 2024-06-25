@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'favorite_button.dart';
+
 class RecipeDetailPage extends StatelessWidget {
   final int idRecipe;
   final String title;
@@ -17,6 +19,8 @@ class RecipeDetailPage extends StatelessWidget {
   final double score;
   final List<String> ingredients;
   final String instructions;
+  final VoidCallback backButtonAction;
+  final VoidCallback favoriteButtonAction;
 
   const RecipeDetailPage({
     super.key,
@@ -33,7 +37,9 @@ class RecipeDetailPage extends StatelessWidget {
     required this.summary,
     required this.score,
     required this.ingredients,
-    required this.instructions
+    required this.instructions,
+    required this.backButtonAction,
+    required this.favoriteButtonAction
   });
 
   @override
@@ -62,6 +68,27 @@ class RecipeDetailPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xffe0e0e0),
+        leading: IconButton(
+          onPressed: () {
+            backButtonAction();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xFF3D3D3D),
+          ),
+        ),
+        actions: <Widget>[
+          FavoriteButton(
+            id: id,
+            markAsFavoriteNotLoggedIn: () {
+              favoriteButtonAction();
+            },
+          )
+        ],
+        automaticallyImplyLeading: false,
+      ),
       body: ListView(
         children: [
           Container(
@@ -154,7 +181,7 @@ class RecipeDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 7),
                           Text(
-                            '$servings persons',
+                            servings == 1 ? '$servings person' : '$servings persons',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
