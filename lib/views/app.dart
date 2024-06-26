@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../models/application_state.dart';
 
-
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
 
