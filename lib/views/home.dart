@@ -2,7 +2,7 @@ import 'package:easy_recipe/models/application_state.dart';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 
 import 'package:easy_recipe/models/home_model.dart';
-import 'package:easy_recipe/models/recipe_card_model.dart';
+import 'package:easy_recipe/models/my_recipe_page_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
     List<int> savedRecipes = await Provider.of<ApplicationState>(context, listen: false).getRecipeIDs();
     if (mounted) {
       setState(() {
-        Provider.of<RecipeCardModel>(context, listen: false).setSavedRecipes(savedRecipes);
+        Provider.of<MyRecipePageModel>(context, listen: false).setRecipeIDs(savedRecipes);
       });
     }
   }
@@ -244,6 +244,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Future openDialog() => showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Login required'),
+        content: const Text('You need to be logged in to do this!'),
+        actions: [
+          TextButton(
+              onPressed: () {
+                setState(() {
+                  Navigator.of(context).pop();
+                  context.go("/sign-in");
+                });
+              },
+              child: const Text('LOGIN')
+          ),
+        ],
+      ),
+    );
+
     if (currentPageIndex == 1) {
       return Scaffold(
         body: Column(
@@ -345,8 +364,6 @@ class _HomePageState extends State<HomePage> {
                             context.go("/sign-in");
                           });
                         },
-                        loggedInState: Provider.of<ApplicationState>(context).loggedIn,
-                        userId: 1,
                       );
                     }
                 )
@@ -360,43 +377,43 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFF3D3D3D),
           ),
           onPressed: () {
-            setState(() {
-              currentPageIndex = 3;
-            });
+            if (Provider.of<ApplicationState>(context, listen: false).loggedIn) {
+              setState(() {
+                currentPageIndex = 3;
+              });
+            } else {
+              openDialog();
+            }
           },
         ),
       );
     } else if (currentPageIndex == 2) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: const Color(0xffe0e0e0),
-          title: IconButton(
-            onPressed: () {
-              setState(() {
-                currentPageIndex = 1;
-              });
-            },
-            icon: const Icon(
-              Icons.arrow_back_ios_new,
-              color: Color(0xFF3D3D3D),
-            ),
-          ),
-          automaticallyImplyLeading: false,
-        ),
-        body: RecipeDetailPage(
-          idRecipe: idRecipeClicked,
-          title: RecipeApi().decodeSpecialCharacters(_detailedRecipe.title),
-          cookingTime: _detailedRecipe.cookingTime,
-          id: _detailedRecipe.id,
-          image: _detailedRecipe.image,
-          isVegan: _detailedRecipe.isVegan,
-          isVegetarian: _detailedRecipe.isVegetarian,
-          servings: _detailedRecipe.servings,
-          summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
-          score: _detailedRecipe.score,
-          ingredients: _detailedRecipe.ingredients,
-          instructions: _detailedRecipe.instructions
-        ),
+      return RecipeDetailPage(
+        idRecipe: idRecipeClicked,
+        title: RecipeApi().decodeSpecialCharacters(_detailedRecipe.title),
+        cookingTime: _detailedRecipe.cookingTime,
+        id: _detailedRecipe.id,
+        image: _detailedRecipe.image,
+        isVegan: _detailedRecipe.isVegan,
+        isVegetarian: _detailedRecipe.isVegetarian,
+        servings: _detailedRecipe.servings,
+        summary: RecipeApi().decodeSpecialCharacters(_detailedRecipe.summary),
+        score: _detailedRecipe.score,
+        ingredients: _detailedRecipe.ingredients,
+        instructions: _detailedRecipe.instructions,
+        isGlutenFree: _detailedRecipe.isGlutenFree,
+        isDairyFree: _detailedRecipe.isDairyFree,
+        backButtonAction: () {
+          setState(() {
+            currentPageIndex = 1;
+          });
+        },
+        favoriteButtonAction: () {
+          setState(() {
+            Navigator.of(context).pop();
+            context.go("/sign-in");
+          });
+        },
       );
     } else if (currentPageIndex == 3) {
       return Scaffold(

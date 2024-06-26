@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'favorite_button.dart';
+
 class RecipeDetailPage extends StatelessWidget {
   final int idRecipe;
   final String title;
@@ -11,10 +13,14 @@ class RecipeDetailPage extends StatelessWidget {
   final int servings;
   final bool isVegan;
   final bool isVegetarian;
+  final bool isGlutenFree;
+  final bool isDairyFree;
   final String summary;
   final double score;
   final List<String> ingredients;
   final String instructions;
+  final VoidCallback backButtonAction;
+  final VoidCallback favoriteButtonAction;
 
   const RecipeDetailPage({
     super.key,
@@ -26,20 +32,33 @@ class RecipeDetailPage extends StatelessWidget {
     required this.servings,
     required this.isVegan,
     required this.isVegetarian,
+    required this.isGlutenFree,
+    required this.isDairyFree,
     required this.summary,
     required this.score,
     required this.ingredients,
-    required this.instructions
+    required this.instructions,
+    required this.backButtonAction,
+    required this.favoriteButtonAction
   });
 
   @override
   Widget build(BuildContext context) {
 
     String diet = "not vegetarian";
+    String gluten = "not gluten-free";
+    String dairy = "not dairy-free";
+
     if (isVegan == true) {
       diet = "vegan";
     } else if (isVegetarian) {
       diet = "vegetarian";
+    }
+    if (isGlutenFree) {
+      gluten = "gluten-free";
+    }
+    if (isDairyFree) {
+      dairy = "dairy-free";
     }
     double scoreRounded = ((score*100).roundToDouble()) / 100;
 
@@ -49,6 +68,27 @@ class RecipeDetailPage extends StatelessWidget {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xffe0e0e0),
+        leading: IconButton(
+          onPressed: () {
+            backButtonAction();
+          },
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Color(0xFF3D3D3D),
+          ),
+        ),
+        actions: <Widget>[
+          FavoriteButton(
+            id: id,
+            markAsFavoriteNotLoggedIn: () {
+              favoriteButtonAction();
+            },
+          )
+        ],
+        automaticallyImplyLeading: false,
+      ),
       body: ListView(
         children: [
           Container(
@@ -141,7 +181,7 @@ class RecipeDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(width: 7),
                           Text(
-                            '$servings persons',
+                            servings == 1 ? '$servings person' : '$servings persons',
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
@@ -163,6 +203,48 @@ class RecipeDetailPage extends StatelessWidget {
                           const SizedBox(width: 7),
                           Text(
                             diet,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe0e0e0),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            MdiIcons.grain,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            gluten,
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      margin: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffe0e0e0),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            MdiIcons.cow,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            dairy,
                             style: const TextStyle(fontSize: 14),
                           ),
                         ],
