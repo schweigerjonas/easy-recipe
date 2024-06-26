@@ -1,6 +1,11 @@
+import 'dart:math';
+
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
@@ -27,6 +32,10 @@ class CreationModel extends ChangeNotifier {
   void setRecipeTitle(String title) {
     this.title = title;
     notifyListeners();
+  }
+
+  String getRecipeTitle() {
+    return title;
   }
 
   void setServings(int servings) {
@@ -75,6 +84,29 @@ class CreationModel extends ChangeNotifier {
 
   void setSummary(String summary) {
     this.summary = summary;
+    notifyListeners();
+  }
+
+  void setImageUrl(String url) {
+    image = url;
+    notifyListeners();
+  }
+
+  void setScore(double score) {
+    this.score = score;
+    notifyListeners();
+  }
+
+
+  // creates random id for the recipe in 1500000 <= x < maxIntegerValue
+  void setId() {
+    /*
+     TODO:
+      get list of all used ids in created recipes, then create new id and check
+      whether it's already used
+    */
+    int value = Random().nextInt(0x7FFFFFFF - 1500000) + 1500000;
+    id = value;
     notifyListeners();
   }
 

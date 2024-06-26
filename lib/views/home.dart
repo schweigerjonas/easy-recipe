@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:easy_recipe/models/recipe.api.dart';
 
-import 'package:easy_recipe/models/recipe.dart';
 import 'package:easy_recipe/views/recipe_card.dart';
 import 'package:provider/provider.dart';
 
