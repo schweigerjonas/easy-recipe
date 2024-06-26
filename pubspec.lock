@@ -232,12 +232,7 @@ packages:
       sha256: "72e7810635f908ce060c5803c7acb29116c5b6befc73e90446c52722bc9506a2"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-<<<<<<< HEAD
-    version: "0.2.6+34"
-=======
     version: "0.2.6+35"
->>>>>>> origin/main
   firebase_storage:
     dependency: "direct main"
     description:
@@ -262,12 +257,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.9.7"
-<<<<<<< HEAD
-=======
-    version: "0.2.6+35"
->>>>>>> origin/main
-=======
->>>>>>> origin/main
   firebase_ui_auth:
     dependency: "direct main"
     description:
@@ -535,10 +524,6 @@ packages:
       sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/main
     version: "1.12.0"
   mime:
     dependency: transitive
@@ -548,12 +533,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-<<<<<<< HEAD
-=======
-    version: "1.11.0"
->>>>>>> origin/main
-=======
->>>>>>> origin/main
   multi_select_flutter:
     dependency: "direct main"
     description:
@@ -728,15 +707,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-<<<<<<< HEAD
-<<<<<<< HEAD
   dart: ">=3.4.0 <4.0.0"
   flutter: ">=3.22.0"
-=======
-  dart: ">=3.3.1 <4.0.0"
-  flutter: ">=3.16.0"
->>>>>>> origin/main
-=======
-  dart: ">=3.4.0 <4.0.0"
-  flutter: ">=3.22.0"
->>>>>>> origin/main

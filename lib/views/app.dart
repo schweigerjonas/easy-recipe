@@ -4,13 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../models/application_state.dart';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
-=======
->>>>>>> origin/main
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});
 
