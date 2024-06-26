@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +31,26 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String getRecipeTitle() {
+    return title;
+  }
+
   void setServings(int servings) {
     this.servings = servings;
     notifyListeners();
   }
 
+  int getServings() {
+    return servings;
+  }
+
   void setTimeToCook(int time) {
     cookingTime = time;
     notifyListeners();
+  }
+
+  int getTimeToCook() {
+    return cookingTime;
   }
 
   void setCategories(List<Category?> selectedCategories) {
@@ -59,6 +73,22 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool getIsVegetarian() {
+    return isVegetarian;
+  }
+
+  bool getIsVegan() {
+    return isVegan;
+  }
+
+  bool getIsDairyFree() {
+    return isDairyFree;
+  }
+
+  bool getIsGlutenFree() {
+    return isGlutenFree;
+  }
+
   void setIngredients(List<String> ingredients) {
     this.ingredients = ingredients;
     notifyListeners();
@@ -71,6 +101,53 @@ class CreationModel extends ChangeNotifier {
   void setInstructions(String instructions) {
     this.instructions = instructions;
     notifyListeners();
+  }
+
+  String getInstructions() {
+    return instructions;
+  }
+
+  void setSummary(String summary) {
+    this.summary = summary;
+    notifyListeners();
+  }
+
+  String getSummary() {
+    return summary;
+  }
+
+  void setImageUrl(String url) {
+    image = url;
+    notifyListeners();
+  }
+
+  String getImageUrl() {
+    return image;
+  }
+
+  void setScore(double score) {
+    this.score = score;
+    notifyListeners();
+  }
+
+  double getScore() {
+    return score;
+  }
+
+  // creates random id for the recipe in 1500000 <= x < maxIntegerValue
+  void setId() {
+    /*
+     TODO:
+      get list of all used ids in created recipes, then create new id and check
+      whether it's already used
+    */
+    int value = Random().nextInt(0x7FFFFFFF - 1500000) + 1500000;
+    id = value;
+    notifyListeners();
+  }
+
+  int getId() {
+    return id;
   }
 
   DetailedRecipe createRecipe() {

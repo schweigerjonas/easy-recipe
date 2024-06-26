@@ -59,6 +59,27 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  Future<DocumentReference> saveCreatedRecipe (DetailedRecipe recipe) async {
+    return FirebaseFirestore.instance
+        .collection('recipes')
+        .add(<String, dynamic>{
+      'id': recipe.id,
+      'title': recipe.title,
+      'image': recipe.image,
+      'cookingTime': recipe.cookingTime,
+      'servings': recipe.servings,
+      'isVegan': recipe.isVegan,
+      'isVegetarian': recipe.isVegetarian,
+      'isDairyFree': recipe.isDairyFree,
+      'isGlutenFree': recipe.isGlutenFree,
+      'summary': recipe.summary,
+      'score': recipe.score,
+      'ingredients': recipe.ingredients,
+      'instructions': recipe.instructions,
+      'userId': FirebaseAuth.instance.currentUser!.uid
+    });
+  }
+
   Future<List<int>> getRecipeIDs() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
     QuerySnapshot snapshot = await FirebaseFirestore.instance

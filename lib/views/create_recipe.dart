@@ -2,6 +2,8 @@ import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:easy_recipe/views/set_recipe_ingredients.dart';
 
 import 'package:easy_recipe/views/set_recipe_instructions.dart';
+import 'package:easy_recipe/views/set_recipe_summary.dart';
+import 'package:easy_recipe/views/show_recipe_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +21,8 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
     const SetRecipeInformation(),
     const SetRecipeIngredients(),
     const SetRecipeInstructions(),
+    const SetRecipeSummary(),
+    const ShowRecipePreview(),
   ];
 
   @override
