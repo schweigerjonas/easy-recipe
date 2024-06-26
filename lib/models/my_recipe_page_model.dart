@@ -6,13 +6,21 @@ import 'filter_option.dart';
 class MyRecipePageModel extends ChangeNotifier {
 
   List<Recipe> _recipes = [];
+  List<int> _recipeIDs = [];
 
   List<FilterOption> _selectedFilterOptions = [];
 
   List<Recipe> get getRecipes => _recipes;
 
+  List<int> get getRecipeIDs => _recipeIDs;
+
   void setRecipes(List<Recipe> newRecipes) {
     _recipes = newRecipes;
+    notifyListeners();
+  }
+
+  void setRecipeIDs(List<int> newRecipes) {
+    _recipeIDs = newRecipes;
     notifyListeners();
   }
 

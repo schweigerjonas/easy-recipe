@@ -6,21 +6,25 @@ class AuthFunc extends StatelessWidget {
     super.key,
     required this.loggedIn,
     required this.signOut,
+    required this.toggleState
   });
 
   final bool loggedIn;
   final void Function() signOut;
+  final VoidCallback toggleState;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
+    return ElevatedButton.icon(
+      icon: !loggedIn ? const Icon(Icons.login) : const Icon(Icons.logout),
       style: ElevatedButton.styleFrom(
         backgroundColor: Theme.of(context).colorScheme.secondary,
       ),
       onPressed: () {
+        toggleState();
         !loggedIn ? context.push('/sign-in') : signOut();
       },
-      child: !loggedIn ? const Text('Sign In') : const Text('Logout'),
+      label: !loggedIn ? const Text('Sign In') : const Text('Logout'),
     );
   }
 }
