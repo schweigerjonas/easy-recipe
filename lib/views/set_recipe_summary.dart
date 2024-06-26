@@ -160,6 +160,7 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () async {
+                    // TODO: handle no image selected
                     creation.setSummary("<p>${summaryController.text}<p>");
                     await uploadImage(creation.getRecipeTitle());
                     creation.setImageUrl(_imageUrl!);
