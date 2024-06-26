@@ -3,9 +3,6 @@ import 'dart:math';
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
@@ -43,9 +40,17 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  int getServings() {
+    return servings;
+  }
+
   void setTimeToCook(int time) {
     cookingTime = time;
     notifyListeners();
+  }
+
+  int getTimeToCook() {
+    return cookingTime;
   }
 
   void setCategories(List<Category?> selectedCategories) {
@@ -68,6 +73,22 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool getIsVegetarian() {
+    return isVegetarian;
+  }
+
+  bool getIsVegan() {
+    return isVegan;
+  }
+
+  bool getIsDairyFree() {
+    return isDairyFree;
+  }
+
+  bool getIsGlutenFree() {
+    return isGlutenFree;
+  }
+
   void setIngredients(List<String> ingredients) {
     this.ingredients = ingredients;
     notifyListeners();
@@ -82,9 +103,17 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String getInstructions() {
+    return instructions;
+  }
+
   void setSummary(String summary) {
     this.summary = summary;
     notifyListeners();
+  }
+
+  String getSummary() {
+    return summary;
   }
 
   void setImageUrl(String url) {
@@ -92,11 +121,18 @@ class CreationModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  String getImageUrl() {
+    return image;
+  }
+
   void setScore(double score) {
     this.score = score;
     notifyListeners();
   }
 
+  double getScore() {
+    return score;
+  }
 
   // creates random id for the recipe in 1500000 <= x < maxIntegerValue
   void setId() {
@@ -108,6 +144,10 @@ class CreationModel extends ChangeNotifier {
     int value = Random().nextInt(0x7FFFFFFF - 1500000) + 1500000;
     id = value;
     notifyListeners();
+  }
+
+  int getId() {
+    return id;
   }
 
   DetailedRecipe createRecipe() {

@@ -165,7 +165,7 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
                     creation.setImageUrl(_imageUrl!);
                     creation.setScore(0.0);
                     creation.setId();
-                    creation.setPageIndex(2);
+                    creation.setPageIndex(4);
                   },
                   child: const Text('Next Step'),
                 ),
