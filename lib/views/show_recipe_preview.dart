@@ -1,11 +1,11 @@
 import 'package:easy_recipe/views/recipe_detail_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../models/application_state.dart';
 import '../models/creation_model.dart';
 import '../models/detailed_recipe.dart';
+import '../models/my_recipe_page_model.dart';
 
 class ShowRecipePreview extends StatefulWidget {
   const ShowRecipePreview({super.key});
@@ -66,12 +66,24 @@ class _ShowRecipePreviewState extends State<ShowRecipePreview> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     DetailedRecipe recipe = creation.createRecipe();
                     Provider.of<ApplicationState>(context, listen: false,).saveCreatedRecipe(recipe);
 
-                    // TODO: create callback to go back to homepage
-                    context.go("/");
+                    if (context.mounted) {
+                      var recipes = await Provider.of<ApplicationState>(context, listen: false).getSavedRecipes();
+                      if (context.mounted) {
+                        var recipeIDs = await Provider.of<ApplicationState>(context, listen: false).getRecipeIDs();
+                        if (context.mounted) {
+                          Provider.of<MyRecipePageModel>(context, listen: false).setRecipes(recipes);
+                          Provider.of<MyRecipePageModel>(context, listen: false).setRecipeIDs(recipeIDs);
+                        }
+                      }
+                    }
+
+                    if (context.mounted) {
+                      Provider.of<CreationModel>(context, listen: false).backToHome();
+                    }
                   },
                   child: const Text('Create Recipe'),
                 ),

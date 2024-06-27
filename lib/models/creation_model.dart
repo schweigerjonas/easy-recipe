@@ -21,6 +21,12 @@ class CreationModel extends ChangeNotifier {
   List<String> ingredients = [];
   String instructions = "";
 
+  final VoidCallback backToHome;
+
+  CreationModel({
+    required this.backToHome
+  });
+
   void setPageIndex(int index) {
     currentPageIndex = index;
     notifyListeners();

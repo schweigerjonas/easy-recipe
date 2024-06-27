@@ -317,7 +317,13 @@ class _MyRecipePageState extends State<MyRecipePage> {
           automaticallyImplyLeading: false,
         ),
         body: ChangeNotifierProvider(
-          create: (context) => CreationModel(),
+          create: (context) => CreationModel(
+            backToHome: () {
+              setState(() {
+                currentPageIndex = 1;
+              });
+            }
+          ),
           child: const CreateRecipePage(),
         ),
       );
