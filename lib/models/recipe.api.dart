@@ -33,7 +33,7 @@ class RecipeApi {
       throw Exception('Failed to get random recipes.');
     }
   }
-
+/*
   Future<List<Recipe>> getRecipeByName(String name) async {
     final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&query=$name&apiKey=$_apiKey'));
 
@@ -46,10 +46,9 @@ class RecipeApi {
     } else {
       throw Exception('Failed to get recipes.');
     }
-  }
+  }*/
 
   Future<List<Recipe>> searchRecipes(String query) async {
-    //TODO: Use filter options as search params
 
     final response = await http.get(Uri.parse('$_baseUrl/recipes/complexSearch?addRecipeInformation=true&$query&apiKey=$_apiKey'));
 
