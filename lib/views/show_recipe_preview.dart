@@ -82,6 +82,10 @@ class _ShowRecipePreviewState extends State<ShowRecipePreview> {
                     }
 
                     if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Recipe created successfully')));
+                    }
+
+                    if (context.mounted) {
                       Provider.of<CreationModel>(context, listen: false).backToHome();
                     }
                   },

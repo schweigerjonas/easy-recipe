@@ -124,6 +124,19 @@ class ApplicationState extends ChangeNotifier {
     }
     return recipes;
   }
+  
+  Future<int> getLastSavedId() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('lastcreationid').get();
+    return snapshot.docs[0]['id'];
+  }
+
+  Future<void> increaseSavedId() async {
+    int currentId = await getLastSavedId();
+    FirebaseFirestore.instance
+        .collection('lastcreationid').doc('lastid')
+        .update({'id': currentId + 1});
+  }
 
   Future<DetailedRecipe> getSavedRecipeDetails(int id) async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
