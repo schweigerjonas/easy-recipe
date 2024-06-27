@@ -24,13 +24,27 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
     final buffer = StringBuffer();
 
     buffer.write("<p><ol>");
-    for(DynamicInstructionWidget element in container) {
-      String inst = element.controller.instructionController.text;
+    for(DynamicInstructionWidget e in container) {
+      String inst = e.controller.instructionController.text;
       if (inst.replaceAll(" ", "") != "") buffer.write("<li>$inst</li>");
     }
     buffer.write("</ol></p>");
 
     return buffer.toString();
+  }
+
+  bool checkEmptyInstructions(String inst) {
+    final checkBuffer = StringBuffer();
+    bool approved = false;
+
+
+    checkBuffer.write(inst.replaceAll("<p><ol>", "").replaceAll("</ol></p>", "")
+        .replaceAll("<li>", "").replaceAll("</li>", "")
+        .replaceAll(" ", ""));
+
+    approved = checkBuffer.toString() == "" ? true : false;
+
+    return approved;
   }
 
   @override
@@ -111,7 +125,7 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                         onPressed: () {
                           setState(() {
                             container.insert(
-                                0,
+                                container.length,
                                 DynamicInstructionWidget(
                                     controller: InstructionWidgetController()));
                           });
@@ -123,7 +137,7 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                         onPressed: () {
                           if (container.isNotEmpty) {
                             setState(() {
-                              container.removeAt(0);
+                              container.removeAt(container.length - 1);
                             });
                           }
                         },
@@ -157,7 +171,16 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                     onPressed: () {
                       instructions = setInstructions();
                       creation.setInstructions(instructions);
-                      creation.setPageIndex(3);
+                      checkEmptyInstructions(instructions) ? ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Input at least one instruction.'),
+                          action: SnackBarAction(
+                            label: 'Got it!',
+                            onPressed: () {
+                            },
+                          ),
+                        ),
+                      ) : creation.setPageIndex(3);
                     },
                     child: const Text('Next Step'),
                   ),

@@ -20,17 +20,13 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
   ];
 
   List<String> setIngredients() {
-    int i = 0;
     List<String> ingredientList = [];
 
-    for (DynamicIngredientWidget element in container) {
-      String ingredient =
-          "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
-      if (ingredient.replaceAll(" ", "").isNotEmpty) {
-        ingredientList.insert(i, ingredient);
+    for (DynamicIngredientWidget e in container) {
+      if (e.controller.getQuantity() != "" && e.controller.getUnit() != UnitLabel.select.label && e.controller.getIngredient() != "") {
+        String ingredient = "${e.controller.getQuantity()} ${e.controller.getUnit()} ${e.controller.getIngredient()}";
+        ingredientList.insert(ingredientList.length, ingredient);
       }
-
-      i = i + 1;
     }
 
     return ingredientList;
@@ -59,7 +55,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                 onPressed: () {
                   setState(() {
                     container.insert(
-                        0,
+                        container.length,
                         DynamicIngredientWidget(
                             controller: IngredientWidgetController()));
                   });
@@ -71,7 +67,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                 onPressed: () {
                   if (container.isNotEmpty) {
                     setState(() {
-                      container.removeAt(0);
+                      container.removeAt(container.length - 1);
                     });
                   }
                 },
@@ -151,7 +147,16 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                   onPressed: () {
                     ingredients = setIngredients();
                     creation.setIngredients(ingredients);
-                    creation.setPageIndex(2);
+                    ingredients.isEmpty ? ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Input at least one ingredient.'),
+                          action: SnackBarAction(
+                            label: 'Got it!',
+                            onPressed: () {
+                            },
+                          ),
+                        ),
+                    ) : creation.setPageIndex(2);
                   },
                   child: const Text('Next Step'),
                 ),

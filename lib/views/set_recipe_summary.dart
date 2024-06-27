@@ -156,9 +156,9 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () async {
-                    // TODO: handle no image selected
                     creation.setSummary("<p>${summaryController.text}<p>");
                     await uploadImage(creation.getRecipeTitle());
+                    _imageUrl ??= "https://fakeimg.pl/312x231?text=No+Image+Available";
                     creation.setImageUrl(_imageUrl!);
                     creation.setScore(0.0);
                     creation.setId();

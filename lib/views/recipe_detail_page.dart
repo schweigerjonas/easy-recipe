@@ -1,3 +1,4 @@
+import 'package:easy_recipe/views/recipe_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -45,6 +46,7 @@ class RecipeDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    /*
     String diet = "not vegetarian";
     String gluten = "not gluten-free";
     String dairy = "not dairy-free";
@@ -66,6 +68,7 @@ class RecipeDetailPage extends StatelessWidget {
     for (int i=0; i<ingredients.length; i++) {
       ingredientsList = '$ingredientsList - ${ingredients[i]} \n';
     }
+    */
 
     return Scaffold(
       appBar: AppBar(
@@ -89,206 +92,21 @@ class RecipeDetailPage extends StatelessWidget {
         ],
         automaticallyImplyLeading: false,
       ),
-      body: ListView(
-        children: [
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
-            alignment: Alignment.center,
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Row(
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(12.0, 8.0, 10.0, 8.0),
-                  width: MediaQuery.of(context).size.width/2,
-                  height: MediaQuery.of(context).size.width/2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    image: DecorationImage(
-                      image: NetworkImage(image),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF3D3D3D),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.star_border,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            scoreRounded.toString(),
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffe0e0e0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.schedule,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                              '$cookingTime min',
-                              style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffe0e0e0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.flatware,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            servings == 1 ? '$servings person' : '$servings persons',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffe0e0e0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            MdiIcons.leaf,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            diet,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffe0e0e0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            MdiIcons.grain,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            gluten,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5),
-                      margin: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xffe0e0e0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            MdiIcons.cow,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 7),
-                          Text(
-                            dairy,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ]
-          ),
-          Container(
-            margin: const EdgeInsets.all(10),
-            child: Html(
-              data: summary,
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-            child: const Text('Ingredients',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
-            child: Text(ingredientsList),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
-            child: const Text('Instructions',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
-            child: Html(
-              data: instructions,
-            ),
-          ),
-        ],
+      body: RecipeDetailView(
+        idRecipe: idRecipe,
+        title: title,
+        image: image,
+        cookingTime: cookingTime,
+        id: id,
+        servings: servings,
+        isVegan: isVegan,
+        isVegetarian: isVegetarian,
+        isGlutenFree: isGlutenFree,
+        isDairyFree: isDairyFree,
+        summary: summary,
+        score: score,
+        ingredients: ingredients,
+        instructions: instructions
       ),
     );
   }
