@@ -307,6 +307,7 @@ class _HomePageState extends State<HomePage> {
                       controller: searchController,
                       onSubmitted: (String text) {
                         //getRecipesByName(searchController.text);
+                        Provider.of<HomePageModel>(context, listen: false).setOffset(0);
                         searchRecipesByFilter();
                       },
                     ),
@@ -484,7 +485,13 @@ class _HomePageState extends State<HomePage> {
           automaticallyImplyLeading: false,
         ),
         body: ChangeNotifierProvider(
-          create: (context) => CreationModel(),
+          create: (context) => CreationModel(
+            backToHome: () {
+              setState(() {
+                currentPageIndex = 1;
+              });
+            }
+          ),
           child: const CreateRecipePage(),
         ),
       );

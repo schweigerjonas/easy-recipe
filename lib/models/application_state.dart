@@ -124,6 +124,19 @@ class ApplicationState extends ChangeNotifier {
     }
     return recipes;
   }
+  
+  Future<int> getLastSavedId() async {
+    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('lastcreationid').get();
+    return snapshot.docs[0]['id'];
+  }
+
+  Future<void> increaseSavedId() async {
+    int currentId = await getLastSavedId();
+    FirebaseFirestore.instance
+        .collection('lastcreationid').doc('lastid')
+        .update({'id': currentId + 1});
+  }
 
   Future<DetailedRecipe> getSavedRecipeDetails(int id) async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -133,6 +146,14 @@ class ApplicationState extends ChangeNotifier {
         .where('userId', isEqualTo: FirebaseAuth.instance.currentUser?.uid).get();
 
     var data = snapshot.docs[0].data() as Map<String, dynamic>;
+
+    //data['ingredients' is somehow a List<dynamic>, so these lines are necessary
+    List<String> ingredientList = [];
+    List<dynamic> ingredients = data['ingredients'];
+    for (var ingredient in ingredients) {
+      ingredientList.add(ingredient);
+    }
+
     DetailedRecipe recipe = DetailedRecipe(
         title: data['title'] as String,
         image: data['image'] as String,
@@ -145,7 +166,7 @@ class ApplicationState extends ChangeNotifier {
         isGlutenFree: data['isGlutenFree'] as bool,
         summary: data['summary'] as String,
         score: data['score'] as double,
-        ingredients: data['ingredients'] as List<String>,
+        ingredients: ingredientList,
         instructions: data['instructions'] as String
     );
 

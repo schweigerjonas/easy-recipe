@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
+
+import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
@@ -20,6 +20,12 @@ class CreationModel extends ChangeNotifier {
   double score = 0.0;
   List<String> ingredients = [];
   String instructions = "";
+
+  final VoidCallback backToHome;
+
+  CreationModel({
+    required this.backToHome
+  });
 
   void setPageIndex(int index) {
     currentPageIndex = index;
@@ -135,14 +141,9 @@ class CreationModel extends ChangeNotifier {
   }
 
   // creates random id for the recipe in 1500000 <= x < maxIntegerValue
-  void setId() {
-    /*
-     TODO:
-      get list of all used ids in created recipes, then create new id and check
-      whether it's already used
-    */
-    int value = Random().nextInt(0x7FFFFFFF - 1500000) + 1500000;
-    id = value;
+  void setId() async {
+    id = await ApplicationState().getLastSavedId();
+    ApplicationState().increaseSavedId();
     notifyListeners();
   }
 

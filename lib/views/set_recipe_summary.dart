@@ -61,10 +61,6 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
     }
 
     _imageUrl = await storageRef.getDownloadURL();
-
-
-    // TODO: Show Snackbar after successfully uploading the complete recipe
-    //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Image uploaded successfully')));
   }
 
   @override
