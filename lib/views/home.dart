@@ -87,12 +87,12 @@ class _HomePageState extends State<HomePage> {
     searchController.dispose();
     super.dispose();
   }
-
+/*
   Future<void> getRecipesByName(String name) async {
     setState(() {
       _isLoading = true;
     });
-    final recipes = await RecipeApi().getRecipeByName(name);
+    final recipes = await RecipeApi().getRecipeByName(name, context);
     if (mounted) {
       setState(() {
         Provider.of<HomePageModel>(context, listen: false).setRecipes(recipes);
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _isLoading = false;
     });
-  }
+  }*/
 
   Future<void> getRecipes() async {
     final recipes = await RecipeApi().getRandomRecipes(randomRecipeCount);
@@ -116,6 +116,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> searchRecipesByFilter() async {
+    String name = '';
     int maxTime = 0;
     String timeQuery = '';
     List<String> diets = [];
@@ -123,6 +124,11 @@ class _HomePageState extends State<HomePage> {
     List<String> types = [];
     String typeQuery = '';
     String query = '';
+
+    if (searchController.text.isNotEmpty) {
+      name = searchController.text;
+    }
+
     var selectedFilterOptions = Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions;
     for (FilterOption f in selectedFilterOptions) {
       if (f.id == 0) {
@@ -164,8 +170,15 @@ class _HomePageState extends State<HomePage> {
         typeQuery += types[i];
       }
     }
+    if (name != '') {
+      query = 'query=$name';
+    }
     if (timeQuery != '') {
-      query = timeQuery;
+      if (query == '') {
+        query = timeQuery;
+      } else {
+        query += '&$timeQuery';
+      }
     }
     if (dietQuery != '') {
       if (query == '') {
@@ -187,6 +200,7 @@ class _HomePageState extends State<HomePage> {
     if (query == '') {
       await getRecipes();
     } else {
+      query += '&offset=${Provider.of<HomePageModel>(context, listen: false).offset}';
       final recipes = await RecipeApi().searchRecipes(query);
       if (mounted) {
         setState(() {
@@ -226,6 +240,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               //_selectedFilterOptions = values;
               Provider.of<HomePageModel>(context, listen: false).setSelectedFilterOptions(values);
+              Provider.of<HomePageModel>(context, listen: false).setOffset(0);
               searchRecipesByFilter();
             });
           },
@@ -233,6 +248,7 @@ class _HomePageState extends State<HomePage> {
           onSelectionChanged: (values) {
             setState(() {
               _selectedFilterOptions = values;
+              Provider.of<HomePageModel>(context, listen: false).setOffset(0);
               searchRecipesByFilter();
             });
           },*/
@@ -290,7 +306,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       controller: searchController,
                       onSubmitted: (String text) {
-                        getRecipesByName(searchController.text);
+                        //getRecipesByName(searchController.text);
+                        searchRecipesByFilter();
                       },
                     ),
                   ),
@@ -321,20 +338,54 @@ class _HomePageState extends State<HomePage> {
                     var selectedFilterOptions = Provider.of<HomePageModel>(context, listen: false).getSelectedFilerOptions;
                     selectedFilterOptions.remove(value);
                     Provider.of<HomePageModel>(context, listen: false).setSelectedFilterOptions(selectedFilterOptions);
+                    Provider.of<HomePageModel>(context, listen: false).setOffset(0);
                     searchRecipesByFilter();
                   });
                 },
               ),
             ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 8.0),
-              alignment: Alignment.centerLeft,
-              child: const Text(
-                'Suggested Recipes',
-                style: TextStyle(
-                  fontSize: 20.0,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    if (Provider.of<HomePageModel>(context, listen: false).offset != 0) {
+                      int offset = Provider.of<HomePageModel>(context, listen: false).offset;
+                      Provider.of<HomePageModel>(context, listen: false).setOffset(offset - 10);
+                      searchRecipesByFilter();
+                    }
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Provider.of<HomePageModel>(context, listen: false).offset != 0 ?
+                    const Color(0xFF3D3D3D) : const Color(0xffe0e0e0),
+                  ),
                 ),
-              ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    'Suggested Recipes',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    if (Provider.of<HomePageModel>(context, listen: false).getRecipes.length == 10) {
+                      int offset = Provider.of<HomePageModel>(context, listen: false).offset;
+                      Provider.of<HomePageModel>(context, listen: false).setOffset(offset + 10);
+                      searchRecipesByFilter();
+                    }
+                  },
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    color: Provider.of<HomePageModel>(context, listen: false).getRecipes.length == 10 ?
+                    const Color(0xFF3D3D3D) : const Color(0xffe0e0e0),
+                  ),
+                ),
+              ],
             ),
             Expanded(
                 child: _isLoading
