@@ -26,10 +26,15 @@ class IngredientWidgetController {
   String getUnit() {
     String unit = "";
 
-    if (selectedUnit != UnitLabel.select) unit = selectedUnit!.label;
-    if (selectedUnit == UnitLabel.noUnit) unit = "";
+    if (selectedUnit != UnitLabel.select) {
+      unit = selectedUnit!.label;
+    } else {
+      unit = UnitLabel.select.label;
+    }
 
-    return unit;
+    if (unit == UnitLabel.noUnit.label) unit = "";
+
+      return unit;
   }
   String getIngredient() => ingredientController.text;
   String getQuantity() => quantityController.text;
