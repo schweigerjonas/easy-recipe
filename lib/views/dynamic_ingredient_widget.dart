@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 
 enum UnitLabel {
   select('-select-'),
+  noUnit('(no unit)'),
+  piece('piece(s)'),
   milliliter('ml'),
   liter('l'),
   gram('g'),
   kilogram('kg'),
   teaspoon('tsp'),
-  tablespoon('tbsp');
+  tablespoon('tbsp'),
+  pinch('pinch(es)'),
+  cup('cup');
 
   const UnitLabel(this.label);
 
@@ -21,7 +25,9 @@ class IngredientWidgetController {
 
   String getUnit() {
     String unit = "";
+
     if (selectedUnit != UnitLabel.select) unit = selectedUnit!.label;
+    if (selectedUnit == UnitLabel.noUnit) unit = "";
 
     return unit;
   }
@@ -62,7 +68,7 @@ class _DynamicIngredientWidgetState extends State<DynamicIngredientWidget> {
             SizedBox(
               width: ((size.width / 32) * 7),
               child: DropdownButtonFormField<UnitLabel>(
-                isDense: true,
+                isExpanded: true,
                 value: widget.controller.selectedUnit,
                 onChanged: (UnitLabel? value) {
                   setState(() {
