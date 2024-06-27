@@ -20,18 +20,13 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
   ];
 
   List<String> setIngredients() {
-    int i = 0;
     List<String> ingredientList = [];
 
-    //TODO: handle empty lines
-    for (DynamicIngredientWidget element in container) {
-      String ingredient =
-          "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";
-      if (ingredient.replaceAll(" ", "").isNotEmpty) {
-        ingredientList.insert(i, ingredient);
+    for (DynamicIngredientWidget e in container) {
+      if (e.controller.getQuantity() != "" && e.controller.getUnit() != "-select-" && e.controller.getIngredient() != "") {
+        String ingredient = "${e.controller.getQuantity()} ${e.controller.getUnit()} ${e.controller.getIngredient()}";
+        ingredientList.insert(ingredientList.length, ingredient);
       }
-
-      i = i + 1;
     }
 
     return ingredientList;
@@ -60,7 +55,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                 onPressed: () {
                   setState(() {
                     container.insert(
-                        0,
+                        container.length,
                         DynamicIngredientWidget(
                             controller: IngredientWidgetController()));
                   });
