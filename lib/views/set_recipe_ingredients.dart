@@ -23,6 +23,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     int i = 0;
     List<String> ingredientList = [];
 
+    //TODO: handle empty lines
     for (DynamicIngredientWidget element in container) {
       String ingredient =
           "${element.controller.getQuantity()} ${element.controller.getUnit()} ${element.controller.getIngredient()}";

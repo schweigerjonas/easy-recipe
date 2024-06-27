@@ -1,4 +1,4 @@
-import 'package:easy_recipe/views/recipe_detail_page.dart';
+import 'package:easy_recipe/views/recipe_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -30,7 +30,7 @@ class _ShowRecipePreviewState extends State<ShowRecipePreview> {
           const SizedBox(height: 32.0),
           Consumer<CreationModel>(
             builder: (context, creation, _) => Expanded(
-              child: RecipeDetailPage(
+              child: RecipeDetailView(
                   idRecipe: creation.getId(),
                   title: creation.getRecipeTitle(),
                   image: creation.getImageUrl(),
@@ -45,8 +45,6 @@ class _ShowRecipePreviewState extends State<ShowRecipePreview> {
                   score: creation.getScore(),
                   ingredients: creation.getIngredients(),
                   instructions: creation.getInstructions(),
-                  backButtonAction: (){},
-                  favoriteButtonAction: (){},
               ),
             ),
           ),
