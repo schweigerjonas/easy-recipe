@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
 
   String title = "";
+  File? imageFile;
   String image = "";
   int cookingTime = 0;
   int id = 0;
@@ -158,12 +161,26 @@ class CreationModel extends ChangeNotifier {
   }
 
   void setSummary(String summary) {
-    this.summary = summary;
+    this.summary = "<p>$summary</p>";
     notifyListeners();
   }
 
   String getSummary() {
     return summary;
+  }
+
+  // Returns summary string without add html elements
+  String getRawSummary() {
+    return summary.replaceAll("<p>", "").replaceAll("</p>", "");
+  }
+
+  void saveImageFile(File? image) {
+    imageFile = image;
+    notifyListeners();
+  }
+
+  File? getImageFile() {
+    return imageFile;
   }
 
   void setImageUrl(String url) {
@@ -184,7 +201,6 @@ class CreationModel extends ChangeNotifier {
     return score;
   }
 
-  // creates random id for the recipe in 1500000 <= x < maxIntegerValue
   void setId() async {
     id = await ApplicationState().getLastSavedId();
     ApplicationState().increaseSavedId();

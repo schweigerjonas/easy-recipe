@@ -15,18 +15,12 @@ class SetRecipeSummary extends StatefulWidget {
 }
 
 class _SetRecipeSummaryState extends State<SetRecipeSummary> {
-  final summaryController = TextEditingController();
+  late TextEditingController summaryController;
 
   Reference storageRef = FirebaseStorage.instance.ref();
   final picker = ImagePicker();
   File? _image;
   String? _imageUrl;
-
-  @override
-  void dispose() {
-
-    super.dispose();
-  }
 
   Future<void> getImageFromGallery() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -61,6 +55,22 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
     }
 
     _imageUrl = await storageRef.getDownloadURL();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final summaryProvider = Provider.of<CreationModel>(context, listen: false);
+    final providedSummary = summaryProvider.getRawSummary();
+
+    summaryController = TextEditingController(text: providedSummary);
+    _image = summaryProvider.getImageFile();
+  }
+
+  @override
+  void dispose() {
+    summaryController.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,16 +115,12 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
                 ),
                 const SizedBox(height: 16.0),
                 Column(
-                  children: <Widget>[
+                  children: [
                     Container(
                       height: 320.0,
                       padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        border: Border.all(
-                          color: Colors.black26,
-                          width: 1.0,
-                        ),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFDDDDDD),
                       ),
                       child: _image == null
                           ? const Center(child: Text("Choose or create an Image for your Recipe"))
@@ -156,7 +162,8 @@ class _SetRecipeSummaryState extends State<SetRecipeSummary> {
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () async {
-                    creation.setSummary("<p>${summaryController.text}<p>");
+                    creation.saveImageFile(_image);
+                    creation.setSummary(summaryController.text);
                     await uploadImage(creation.getRecipeTitle());
                     _imageUrl ??= "https://fakeimg.pl/312x231?text=No+Image+Available";
                     creation.setImageUrl(_imageUrl!);
