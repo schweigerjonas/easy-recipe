@@ -2,6 +2,7 @@ import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
+import '../views/dynamic_ingredient_widget.dart';
 import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
@@ -18,6 +19,7 @@ class CreationModel extends ChangeNotifier {
   bool isGlutenFree = false;
   String summary = "";
   double score = 0.0;
+  List<DynamicIngredientWidget> ingredientContainer = [];
   List<String> ingredients = [];
   String instructions = "";
 
@@ -115,6 +117,15 @@ class CreationModel extends ChangeNotifier {
     if (getIsGlutenFree() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "gluten-free"));
 
     return selectedCategories;
+  }
+
+  void saveIngredientWidgets(List<DynamicIngredientWidget> container) {
+    ingredientContainer = container;
+    notifyListeners();
+  }
+
+  List<DynamicIngredientWidget> getIngredientWidgets() {
+    return ingredientContainer;
   }
 
   void setIngredients(List<String> ingredients) {
