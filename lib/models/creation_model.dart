@@ -95,6 +95,28 @@ class CreationModel extends ChangeNotifier {
     return isGlutenFree;
   }
 
+  List<Category?> getCategories () {
+    List<Category?> categories = [
+      Category(id: 1, name: "vegetarian", isSet: false),
+      Category(id: 2, name: "vegan", isSet: false),
+      Category(id: 3, name: "dairy-free", isSet: false),
+      Category(id: 4, name: "gluten-free", isSet: false),
+    ];
+
+    return categories;
+  }
+
+  List<Category?> getSelectedCategories() {
+    List<Category?> selectedCategories = [];
+
+    if (getIsVegetarian() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "vegetarian"));
+    if (getIsVegan() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "vegan"));
+    if (getIsDairyFree() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "dairy-free"));
+    if (getIsGlutenFree() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "gluten-free"));
+
+    return selectedCategories;
+  }
+
   void setIngredients(List<String> ingredients) {
     this.ingredients = ingredients;
     notifyListeners();

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
-import 'package:multi_select_flutter/util/multi_select_list_type.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../models/creation_model.dart';
@@ -17,6 +14,22 @@ class Category {
     required this.name,
     required this.isSet,
   });
+
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Category &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name;
+
+  /*
+  If two Category objects have the same id and name, they will produce the same
+  hash code. This is crucial for objects to be compared by the "==" operator
+   */
+  @override
+  int get hashCode => id.hashCode ^ name.hashCode;
 
   @override
   toString() {
@@ -35,32 +48,47 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
   final _formKeyName = GlobalKey<FormState>();
   final _formKeyServings = GlobalKey<FormState>();
   final _formKeyTime = GlobalKey<FormState>();
-  final recipeNameController = TextEditingController();
-  final servingsController = TextEditingController();
-  final timeController = TextEditingController();
+  late TextEditingController recipeNameController;
+  late TextEditingController servingsController;
+  late TextEditingController timeController;
 
-  static final List<Category> _categories = [
-    Category(id: 1, name: "vegetarian", isSet: false),
-    Category(id: 2, name: "vegan", isSet: false),
-    Category(id: 3, name: "dairy-free", isSet: false),
-    Category(id: 4, name: "gluten-free", isSet: false),
-  ];
-  final _items = _categories
-      .map((category) => MultiSelectItem<Category>(category, category.name))
-      .toList();
+  List<Category?> _categories = [];
+  List<MultiSelectItem<Category?>> _items = [];
   List<Category?> _selectedCategories = [];
 
   @override
   void initState() {
-    _selectedCategories = [];
     super.initState();
+    final recipeProvider = Provider.of<CreationModel>(context, listen: false);
+    final recipeTitle = recipeProvider.getRecipeTitle();
+    final servings = recipeProvider.getServings().toString();
+    final timeToCook = recipeProvider.getTimeToCook().toString();
+
+    _categories = recipeProvider.getCategories();
+    _items = _categories
+        .map((category) => MultiSelectItem<Category?>(category, category!.name))
+        .toList();
+    _selectedCategories = recipeProvider.getSelectedCategories();
+
+    recipeNameController = TextEditingController(text: recipeTitle);
+    servingsController = TextEditingController(text: servings == "0" ? "" : servings);
+    timeController = TextEditingController(text: timeToCook == "0" ? "" : timeToCook);
+  }
+
+  @override
+  void dispose() {
+    recipeNameController.dispose();
+    servingsController.dispose();
+    timeController.dispose();
+    super.dispose();
   }
 
   List<Category?> setCategoryValues() {
-    for (var i=0; i<_selectedCategories.length; i++) {
-      for (var j=0; j<_categories.length; j++) {
-        if (_categories.elementAt(j).id == _selectedCategories.elementAt(i)?.id) {
-          _categories.elementAt(j).isSet = true;
+    for (var i = 0; i < _selectedCategories.length; i++) {
+      for (var j = 0; j < _categories.length; j++) {
+        if (_categories.elementAt(j)!.id ==
+            _selectedCategories.elementAt(i)?.id) {
+          _categories.elementAt(j)!.isSet = true;
           break;
         }
       }
@@ -133,7 +161,9 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                             ),
                             controller: servingsController,
                             validator: (String? value) {
-                              if (value == null || value.isEmpty) {
+                              if (value == null ||
+                                  value.isEmpty ||
+                                  value == 0.toString()) {
                                 return 'This field is required';
                               } else {
                                 return null;
@@ -195,19 +225,19 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                   listType: MultiSelectListType.CHIP,
                   buttonText: const Text('Select'),
                   title: const Text('Categories'),
+                  initialValue: _selectedCategories,
                   items: _items,
                   onConfirm: (values) {
                     setState(() {
                       _selectedCategories = values;
                     });
                   },
-                  chipDisplay: MultiSelectChipDisplay(
-                    onTap: (value) {
-                      setState(() {
-                        _selectedCategories.remove(value);
-                      });
-                    },
-                  ),
+                  chipDisplay: MultiSelectChipDisplay(onTap: (value) {
+                    setState(() {
+                      _selectedCategories.remove(value);
+                    });
+                    return _selectedCategories;
+                  }),
                 ),
               ],
             ),
@@ -221,7 +251,9 @@ class _SetRecipeInformationState extends State<SetRecipeInformation> {
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
-                    if (_formKeyName.currentState!.validate() && _formKeyServings.currentState!.validate() && _formKeyTime.currentState!.validate()) {
+                    if (_formKeyName.currentState!.validate() &&
+                        _formKeyServings.currentState!.validate() &&
+                        _formKeyTime.currentState!.validate()) {
                       creation.setRecipeTitle(recipeNameController.text);
                       creation.setServings(int.parse(servingsController.text));
                       creation.setTimeToCook(int.parse(timeController.text));
