@@ -3,6 +3,7 @@ import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
 import '../views/dynamic_ingredient_widget.dart';
+import '../views/dynamic_instruction_widget.dart';
 import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
@@ -21,6 +22,7 @@ class CreationModel extends ChangeNotifier {
   double score = 0.0;
   List<DynamicIngredientWidget> ingredientContainer = [];
   List<String> ingredients = [];
+  List<DynamicInstructionWidget> instructionContainer = [];
   String instructions = "";
 
   final VoidCallback backToHome;
@@ -135,6 +137,15 @@ class CreationModel extends ChangeNotifier {
 
   List<String> getIngredients() {
     return ingredients;
+  }
+
+  void saveInstructionWidgets(List<DynamicInstructionWidget> container) {
+    instructionContainer = container;
+    notifyListeners();
+  }
+
+  List<DynamicInstructionWidget> getInstructionWidgets() {
+    return instructionContainer;
   }
 
   void setInstructions(String instructions) {
