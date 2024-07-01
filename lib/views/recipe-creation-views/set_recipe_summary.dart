@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-import '../models/creation_model.dart';
+import '../../models/creation_model.dart';
 
 class SetRecipeSummary extends StatefulWidget {
   const SetRecipeSummary({super.key});

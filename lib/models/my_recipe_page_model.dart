@@ -1,7 +1,7 @@
 import 'package:easy_recipe/models/recipe.dart';
 import 'package:flutter/material.dart';
 
-import 'filter_option.dart';
+import '../utils/filter_option.dart';
 
 class MyRecipePageModel extends ChangeNotifier {
 

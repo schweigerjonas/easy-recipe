@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/creation_model.dart';
-import 'dynamic_instruction_widget.dart';
+import '../../models/creation_model.dart';
+import '../../widgets/dynamic_instruction_widget.dart';
 
 class SetRecipeInstructions extends StatefulWidget {
   const SetRecipeInstructions({super.key});

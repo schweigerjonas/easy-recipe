@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/application_state.dart';
+import '../services/application_state.dart';
 import '../models/my_recipe_page_model.dart';
 
 class FavoriteButton extends StatelessWidget {

@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../models/application_state.dart';
+import '../../services/application_state.dart';
 import 'authentication.dart';
 
 class ProfilePage extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../models/creation_model.dart';
+import '../../models/creation_model.dart';
 
 class Category {
   final int id;
