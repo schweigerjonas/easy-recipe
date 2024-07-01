@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:easy_recipe/models/detailed_recipe.dart';
-import 'package:easy_recipe/views/set_recipe_information.dart';
+import 'package:easy_recipe/views/recipe-creation-views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
-import '../views/dynamic_ingredient_widget.dart';
-import '../views/dynamic_instruction_widget.dart';
-import 'application_state.dart';
+import '../widgets/dynamic_ingredient_widget.dart';
+import '../widgets/dynamic_instruction_widget.dart';
+import '../services/application_state.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;

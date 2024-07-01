@@ -1,9 +1,7 @@
-import 'package:easy_recipe/views/recipe_detail_view.dart';
+import 'package:easy_recipe/widgets/recipe_detail_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import 'favorite_button.dart';
+import '../widgets/favorite_button.dart';
 
 class RecipeDetailPage extends StatelessWidget {
   final int idRecipe;
@@ -45,30 +43,6 @@ class RecipeDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    /*
-    String diet = "not vegetarian";
-    String gluten = "not gluten-free";
-    String dairy = "not dairy-free";
-
-    if (isVegan == true) {
-      diet = "vegan";
-    } else if (isVegetarian) {
-      diet = "vegetarian";
-    }
-    if (isGlutenFree) {
-      gluten = "gluten-free";
-    }
-    if (isDairyFree) {
-      dairy = "dairy-free";
-    }
-    double scoreRounded = ((score*100).roundToDouble()) / 100;
-
-    String ingredientsList = '';
-    for (int i=0; i<ingredients.length; i++) {
-      ingredientsList = '$ingredientsList - ${ingredients[i]} \n';
-    }
-    */
 
     return Scaffold(
       appBar: AppBar(

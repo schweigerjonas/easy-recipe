@@ -1,4 +1,4 @@
-import 'package:easy_recipe/models/recipe.api.dart';
+import 'package:easy_recipe/services/recipe.api.dart';
 
 class DetailedRecipe {
   final String title;

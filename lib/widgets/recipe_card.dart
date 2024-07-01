@@ -1,4 +1,4 @@
-import 'package:easy_recipe/views/favorite_button.dart';
+import 'package:easy_recipe/widgets/favorite_button.dart';
 import 'package:flutter/material.dart';
 
 class RecipeCard extends StatelessWidget {

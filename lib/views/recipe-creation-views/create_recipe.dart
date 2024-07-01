@@ -1,13 +1,13 @@
-import 'package:easy_recipe/views/set_recipe_information.dart';
-import 'package:easy_recipe/views/set_recipe_ingredients.dart';
+import 'package:easy_recipe/views/recipe-creation-views/set_recipe_information.dart';
+import 'package:easy_recipe/views/recipe-creation-views/set_recipe_ingredients.dart';
 
-import 'package:easy_recipe/views/set_recipe_instructions.dart';
-import 'package:easy_recipe/views/set_recipe_summary.dart';
-import 'package:easy_recipe/views/show_recipe_preview.dart';
+import 'package:easy_recipe/views/recipe-creation-views/set_recipe_instructions.dart';
+import 'package:easy_recipe/views/recipe-creation-views/set_recipe_summary.dart';
+import 'package:easy_recipe/views/recipe-creation-views/show_recipe_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/creation_model.dart';
+import '../../models/creation_model.dart';
 
 class CreateRecipePage extends StatefulWidget {
   const CreateRecipePage({super.key});

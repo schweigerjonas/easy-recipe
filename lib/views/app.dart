@@ -1,8 +1,8 @@
-import 'package:easy_recipe/models/router.dart';
+import 'package:easy_recipe/services/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/application_state.dart';
+import '../services/application_state.dart';
 
 class RecipeApp extends StatelessWidget {
   const RecipeApp({super.key});

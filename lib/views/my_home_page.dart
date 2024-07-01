@@ -1,6 +1,6 @@
-import 'package:easy_recipe/models/application_state.dart';
-import 'package:easy_recipe/views/login_required_page.dart';
-import 'package:easy_recipe/views/profile.dart';
+import 'package:easy_recipe/services/application_state.dart';
+import 'package:easy_recipe/views/login-views/login_required_page.dart';
+import 'package:easy_recipe/views/login-views/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
