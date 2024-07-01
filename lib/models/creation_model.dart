@@ -1,13 +1,18 @@
+import 'dart:io';
+
 import 'package:easy_recipe/models/detailed_recipe.dart';
 import 'package:easy_recipe/views/set_recipe_information.dart';
 import 'package:flutter/material.dart';
 
+import '../views/dynamic_ingredient_widget.dart';
+import '../views/dynamic_instruction_widget.dart';
 import 'application_state.dart';
 
 class CreationModel extends ChangeNotifier {
   int currentPageIndex = 0;
 
   String title = "";
+  File? imageFile;
   String image = "";
   int cookingTime = 0;
   int id = 0;
@@ -18,7 +23,9 @@ class CreationModel extends ChangeNotifier {
   bool isGlutenFree = false;
   String summary = "";
   double score = 0.0;
+  List<DynamicIngredientWidget> ingredientContainer = [];
   List<String> ingredients = [];
+  List<DynamicInstructionWidget> instructionContainer = [];
   String instructions = "";
 
   final VoidCallback backToHome;
@@ -95,6 +102,37 @@ class CreationModel extends ChangeNotifier {
     return isGlutenFree;
   }
 
+  List<Category?> getCategories () {
+    List<Category?> categories = [
+      Category(id: 1, name: "vegetarian", isSet: false),
+      Category(id: 2, name: "vegan", isSet: false),
+      Category(id: 3, name: "dairy-free", isSet: false),
+      Category(id: 4, name: "gluten-free", isSet: false),
+    ];
+
+    return categories;
+  }
+
+  List<Category?> getSelectedCategories() {
+    List<Category?> selectedCategories = [];
+
+    if (getIsVegetarian() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "vegetarian"));
+    if (getIsVegan() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "vegan"));
+    if (getIsDairyFree() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "dairy-free"));
+    if (getIsGlutenFree() == true) selectedCategories.add(getCategories().firstWhere((e) => e!.name == "gluten-free"));
+
+    return selectedCategories;
+  }
+
+  void saveIngredientWidgets(List<DynamicIngredientWidget> container) {
+    ingredientContainer = container;
+    notifyListeners();
+  }
+
+  List<DynamicIngredientWidget> getIngredientWidgets() {
+    return ingredientContainer;
+  }
+
   void setIngredients(List<String> ingredients) {
     this.ingredients = ingredients;
     notifyListeners();
@@ -102,6 +140,15 @@ class CreationModel extends ChangeNotifier {
 
   List<String> getIngredients() {
     return ingredients;
+  }
+
+  void saveInstructionWidgets(List<DynamicInstructionWidget> container) {
+    instructionContainer = container;
+    notifyListeners();
+  }
+
+  List<DynamicInstructionWidget> getInstructionWidgets() {
+    return instructionContainer;
   }
 
   void setInstructions(String instructions) {
@@ -114,12 +161,26 @@ class CreationModel extends ChangeNotifier {
   }
 
   void setSummary(String summary) {
-    this.summary = summary;
+    this.summary = "<p>$summary</p>";
     notifyListeners();
   }
 
   String getSummary() {
     return summary;
+  }
+
+  // Returns summary string without add html elements
+  String getRawSummary() {
+    return summary.replaceAll("<p>", "").replaceAll("</p>", "");
+  }
+
+  void saveImageFile(File? image) {
+    imageFile = image;
+    notifyListeners();
+  }
+
+  File? getImageFile() {
+    return imageFile;
   }
 
   void setImageUrl(String url) {
@@ -140,7 +201,6 @@ class CreationModel extends ChangeNotifier {
     return score;
   }
 
-  // creates random id for the recipe in 1500000 <= x < maxIntegerValue
   void setId() async {
     id = await ApplicationState().getLastSavedId();
     ApplicationState().increaseSavedId();

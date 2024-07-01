@@ -12,12 +12,8 @@ class SetRecipeIngredients extends StatefulWidget {
 }
 
 class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
+  late List<DynamicIngredientWidget> container;
   List<String> ingredients = [];
-  List<DynamicIngredientWidget> container = [
-    DynamicIngredientWidget(controller: IngredientWidgetController()),
-    DynamicIngredientWidget(controller: IngredientWidgetController()),
-    DynamicIngredientWidget(controller: IngredientWidgetController()),
-  ];
 
   List<String> setIngredients() {
     List<String> ingredientList = [];
@@ -30,6 +26,22 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
     }
 
     return ingredientList;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final ingredientProvider = Provider.of<CreationModel>(context, listen: false);
+    final ingredientWidgets = ingredientProvider.getIngredientWidgets();
+
+    container = ingredientWidgets;
+    if (container.isEmpty) {
+      container = [
+        DynamicIngredientWidget(controller: IngredientWidgetController()),
+        DynamicIngredientWidget(controller: IngredientWidgetController()),
+        DynamicIngredientWidget(controller: IngredientWidgetController()),
+      ];
+    }
   }
 
   @override
@@ -145,6 +157,7 @@ class _SetRecipeIngredientsState extends State<SetRecipeIngredients> {
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
+                    creation.saveIngredientWidgets(container);
                     ingredients = setIngredients();
                     creation.setIngredients(ingredients);
                     ingredients.isEmpty ? ScaffoldMessenger.of(context).showSnackBar(

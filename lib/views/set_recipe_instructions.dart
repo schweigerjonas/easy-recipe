@@ -12,13 +12,9 @@ class SetRecipeInstructions extends StatefulWidget {
 }
 
 class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
-  String instructions = "";
-  List<DynamicInstructionWidget> container = [
-    DynamicInstructionWidget(controller: InstructionWidgetController()),
-    DynamicInstructionWidget(controller: InstructionWidgetController()),
-    DynamicInstructionWidget(controller: InstructionWidgetController()),
-  ];
+  late List<DynamicInstructionWidget> container;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String instructions = "";
 
   String setInstructions() {
     final buffer = StringBuffer();
@@ -45,6 +41,22 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
     approved = checkBuffer.toString() == "" ? true : false;
 
     return approved;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    final instructionProvider = Provider.of<CreationModel>(context, listen: false);
+    final instructionContainer = instructionProvider.getInstructionWidgets();
+
+    container = instructionContainer;
+    if (container.isEmpty) {
+      container = [
+        DynamicInstructionWidget(controller: InstructionWidgetController()),
+        DynamicInstructionWidget(controller: InstructionWidgetController()),
+        DynamicInstructionWidget(controller: InstructionWidgetController()),
+      ];
+    }
   }
 
   @override
@@ -169,6 +181,7 @@ class _SetRecipeInstructionsState extends State<SetRecipeInstructions> {
                       backgroundColor: Theme.of(context).colorScheme.secondary,
                     ),
                     onPressed: () {
+                      creation.saveInstructionWidgets(container);
                       instructions = setInstructions();
                       creation.setInstructions(instructions);
                       checkEmptyInstructions(instructions) ? ScaffoldMessenger.of(context).showSnackBar(
