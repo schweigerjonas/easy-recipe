@@ -26,7 +26,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  int randomRecipeCount = 5;
+  int randomRecipeCount = 10;
   bool _isLoading = true;
   final searchController = TextEditingController();
   int currentPageIndex = 1;
